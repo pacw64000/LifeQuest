@@ -1,44 +1,20 @@
-// App.js
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
-import ProfileHeader from './components/ProfileHeader';
-import MissionButton from './components/MissionButton';
-import RewardsButton from './components/RewardsButton';
-import GlobalMissionsSection from './components/GlobalMissionsSection';
-import NavBar from './components/NavBar';
+import "react-native-gesture-handler";
+import React from "react";
+import { StatusBar } from "expo-status-bar";
+import { NavigationContainer } from "@react-navigation/native";
+import { AuthProvider } from "./src/context/AuthContext";
+import { DadosAppProvider } from "./src/context/DadosAppContext";
+import NavegacaoRaiz from "./src/navigation/NavegacaoRaiz";
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.mainContent}>
-        <ProfileHeader />
-        
-        <View style={styles.middleSection}>
-          <MissionButton />
-          <RewardsButton />
-        </View>
-
-        <GlobalMissionsSection />
-      </View>
-
-      <NavBar />
-    </SafeAreaView>
+    <AuthProvider>
+      <DadosAppProvider>
+        <NavigationContainer>
+          <StatusBar style="dark" />
+          <NavegacaoRaiz />
+        </NavigationContainer>
+      </DadosAppProvider>
+    </AuthProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,  // Ensures the entire screen is taken up
-    backgroundColor: '#F5F5F5',
-  },
-  mainContent: {
-    flex: 1, // Ensures that content above NavBar takes up all space available
-    paddingBottom: 80,  // Adds space for the NavBar at the bottom
-  },
-  middleSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 16,
-    marginTop: 20, // Adds space between Profile and buttons
-  },
-});

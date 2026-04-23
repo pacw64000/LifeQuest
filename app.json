@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "AulaFipp",
-    "slug": "AulaFipp",
+    "name": "LifeQuest",
+    "slug": "lifequest",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -24,6 +24,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": ["expo-notifications"]
   }
 }
