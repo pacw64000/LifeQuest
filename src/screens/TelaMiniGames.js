@@ -1,7 +1,8 @@
-import React, { Component } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, ImageBackground } from "react-native";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import rotas from "../constants/rotas";
 import coresTema from "../constants/cores";
+import FundoGradienteDecorativo from "../components/FundoGradienteDecorativo";
 
 const listaMiniGames = [
   { idGame: rotas.jogoMemoria, tituloGame: "Jogo da Memoria" },
@@ -13,24 +14,14 @@ const listaMiniGames = [
 
 export default function TelaMiniGames({ navigation }) {
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        style={styles.rect}
-        imageStyle={styles.rect_imageStyle}
-        source={require("../assets/images/Gradient_JV33GZG.png")}
-      ></ImageBackground>
-      <ImageBackground
-        style={styles.rect2}
-        imageStyle={styles.rect2_imageStyle}
-        source={require("../assets/images/Gradient_H0Vzu6n.png")}
-      ></ImageBackground>
+    <FundoGradienteDecorativo style={styles.container}>
       <Text style={styles.descricao}>Conclua missoes e ganhe XP bonus com mini games.</Text>
       {listaMiniGames.map((gameAtual) => (
         <TouchableOpacity key={gameAtual.idGame} style={styles.itemGame} onPress={() => navigation.navigate(gameAtual.idGame)}>
           <Text style={styles.tituloGame}>{gameAtual.tituloGame}</Text>
         </TouchableOpacity>
       ))}
-    </View>
+    </FundoGradienteDecorativo>
   );
 }
 
@@ -46,15 +37,4 @@ const styles = StyleSheet.create({
     borderColor: coresTema.bordaSuave,
   },
   tituloGame: { color: coresTema.textoPrincipal, fontWeight: "700" },
-  rect: {
-    width: 375,
-    height: 119
-  },
-  rect_imageStyle: {},
-  rect2: {
-    width: 375,
-    height: 100,
-    marginTop: 593
-  },
-  rect2_imageStyle: {}
 });

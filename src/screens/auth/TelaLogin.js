@@ -1,6 +1,7 @@
-import React, { Component, useState } from "react";
-import { Alert, ImageBackground, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useState } from "react";
+import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import BotaoPrimario from "../../components/BotaoPrimario";
+import FundoGradienteDecorativo from "../../components/FundoGradienteDecorativo";
 import { useAuth } from "../../context/AuthContext";
 import coresTema from "../../constants/cores";
 import rotas from "../../constants/rotas";
@@ -42,18 +43,7 @@ function TelaLogin({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        style={styles.rect}
-        imageStyle={styles.rect_imageStyle}
-        source={require("../../assets/images/Gradient_JV33GZG.png")}
-      ></ImageBackground>
-      <ImageBackground
-        style={styles.rect2}
-        imageStyle={styles.rect2_imageStyle}
-        source={require("../../assets/images/Gradient_H0Vzu6n.png")}
-      ></ImageBackground>
-
+    <FundoGradienteDecorativo style={styles.container}>
       <Text style={styles.titulo}>LifeQuest</Text>
       <Text style={styles.subtitulo}>Transforme tarefas em aventuras</Text>
 
@@ -81,7 +71,7 @@ function TelaLogin({ navigation }) {
       <BotaoPrimario tituloBotao="Entrar com Google" onPress={acaoEntrarComGoogle} />
       <BotaoPrimario tituloBotao="Entrar como Convidado" onPress={loginComoConvidado} />
       <BotaoPrimario tituloBotao="Criar conta" onPress={() => navigation.navigate(rotas.cadastro)} />
-    </View>
+    </FundoGradienteDecorativo>
   );
 }
 
@@ -102,17 +92,6 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 10,
   },
-  rect: {
-    width: 375,
-    height: 119,
-  },
-  rect_imageStyle: {},
-  rect2: {
-    width: 375,
-    height: 100,
-    marginTop: 593,
-  },
-  rect2_imageStyle: {},
 });
 
 export default TelaLogin;

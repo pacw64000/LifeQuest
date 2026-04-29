@@ -1,6 +1,7 @@
-import React, { Component, useState } from "react";
-import { Alert, ImageBackground, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useState } from "react";
+import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import BotaoPrimario from "../../components/BotaoPrimario";
+import FundoGradienteDecorativo from "../../components/FundoGradienteDecorativo";
 import { useAuth } from "../../context/AuthContext";
 import coresTema from "../../constants/cores";
 
@@ -21,17 +22,7 @@ function TelaCadastro({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        style={styles.rect}
-        imageStyle={styles.rect_imageStyle}
-        source={require("../../assets/images/Gradient_JV33GZG.png")}
-      ></ImageBackground>
-      <ImageBackground
-        style={styles.rect2}
-        imageStyle={styles.rect2_imageStyle}
-        source={require("../../assets/images/Gradient_H0Vzu6n.png")}
-      ></ImageBackground>
+    <FundoGradienteDecorativo style={styles.container}>
       <Text style={styles.titulo}>Criar Conta</Text>
       <TextInput placeholder="Nome de usuario" value={nomeUsuario} onChangeText={setNomeUsuario} style={styles.input} />
       <TextInput
@@ -44,7 +35,7 @@ function TelaCadastro({ navigation }) {
       />
       <TextInput placeholder="Senha" value={senhaUsuario} onChangeText={setSenhaUsuario} secureTextEntry style={styles.input} />
       <BotaoPrimario tituloBotao="Cadastrar" onPress={acaoCadastrar} />
-    </View>
+    </FundoGradienteDecorativo>
   );
 }
 
@@ -59,17 +50,6 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 10,
   },
-  rect: {
-    width: 375,
-    height: 119,
-  },
-  rect_imageStyle: {},
-  rect2: {
-    width: 375,
-    height: 100,
-    marginTop: 593,
-  },
-  rect2_imageStyle: {},
 });
 
 export default TelaCadastro;
