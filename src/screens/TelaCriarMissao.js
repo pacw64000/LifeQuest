@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import BotaoPrimario from "../components/BotaoPrimario";
-import FundoGradienteDecorativo from "../components/FundoGradienteDecorativo";
-import coresTema from "../constants/cores";
 import { useDadosApp } from "../context/DadosAppContext";
+import { useTemaVisual } from "../context/TemaVisualContext";
 import { agendarLembreteMissao } from "../services/notificacoes/servicoNotificacoes";
+import { espacamento } from "../constants/layout";
 
 export default function TelaCriarMissao({ navigation }) {
   const { criarMissao } = useDadosApp();
+  const { paleta, insetsChrome } = useTemaVisual();
   const [tituloMissao, setTituloMissao] = useState("");
   const [descricaoMissao, setDescricaoMissao] = useState("");
   const [dificuldadeMissao, setDificuldadeMissao] = useState("facil");
@@ -38,17 +39,35 @@ export default function TelaCriarMissao({ navigation }) {
     navigation.goBack();
   }
 
+  const inputStyle = [
+    styles.input,
+    {
+      borderColor: paleta.bordaSuave,
+      backgroundColor: paleta.fundoCartao,
+      color: paleta.textoPrincipal,
+    },
+  ];
+
   return (
-    <FundoGradienteDecorativo style={styles.container}>
-      <TextInput style={styles.input} placeholder="Titulo da missao" value={tituloMissao} onChangeText={setTituloMissao} />
+    <ScrollView
+      style={[styles.scroll, { backgroundColor: paleta.fundoPrimario }]}
+      contentContainerStyle={{
+        paddingTop: insetsChrome.paddingTopConteudo + espacamento.sm,
+        paddingBottom: insetsChrome.paddingBottomConteudo + espacamento.lg,
+        paddingHorizontal: espacamento.md,
+      }}
+      keyboardShouldPersistTaps="handled"
+    >
+      <TextInput style={inputStyle} placeholder="Titulo da missao" placeholderTextColor={paleta.textoSecundario} value={tituloMissao} onChangeText={setTituloMissao} />
       <TextInput
-        style={[styles.input, styles.inputMultiLinha]}
+        style={[inputStyle, styles.inputMultiLinha]}
         placeholder="Descricao"
+        placeholderTextColor={paleta.textoSecundario}
         value={descricaoMissao}
         onChangeText={setDescricaoMissao}
         multiline
       />
-      <Text style={styles.label}>Dificuldade</Text>
+      <Text style={[styles.label, { color: paleta.textoSecundario }]}>Dificuldade</Text>
       <View style={styles.linhaDificuldade}>
         {["facil", "media", "dificil"].map((opcaoDificuldade) => (
           <BotaoPrimario
@@ -60,21 +79,22 @@ export default function TelaCriarMissao({ navigation }) {
         ))}
       </View>
       <TextInput
-        style={styles.input}
+        style={inputStyle}
         placeholder="Lembrete em segundos (0 desativa)"
+        placeholderTextColor={paleta.textoSecundario}
         value={segundosLembreteTexto}
         onChangeText={setSegundosLembreteTexto}
         keyboardType="numeric"
       />
       <BotaoPrimario tituloBotao="Salvar missao" onPress={acaoSalvarMissao} />
-    </FundoGradienteDecorativo>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: coresTema.fundoPrimario, padding: 16 },
-  input: { backgroundColor: "#FFF", borderRadius: 10, borderWidth: 1, borderColor: coresTema.bordaSuave, padding: 12, marginBottom: 10 },
+  scroll: { flex: 1 },
+  input: { borderRadius: 10, borderWidth: 1, padding: 12, marginBottom: 10 },
   inputMultiLinha: { minHeight: 90, textAlignVertical: "top" },
-  label: { color: coresTema.textoSecundario, marginBottom: 8 },
+  label: { marginBottom: 8 },
   linhaDificuldade: { marginBottom: 12 },
 });

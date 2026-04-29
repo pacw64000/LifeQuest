@@ -3,6 +3,8 @@ const rotas = {
   cadastro: "Cadastro",
   abasPrincipal: "AbasPrincipal",
   dashboard: "Dashboard",
+  perfil: "Perfil",
+  configuracoesAparencia: "ConfiguracoesAparencia",
   missoes: "Missoes",
   criarMissao: "CriarMissao",
   miniGames: "MiniGames",

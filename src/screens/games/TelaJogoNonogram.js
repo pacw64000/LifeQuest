@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import coresTema from "../../constants/cores";
 import { useDadosApp } from "../../context/DadosAppContext";
+import { useTemaVisual } from "../../context/TemaVisualContext";
 
 const gabaritoNonogram = [
   [1, 0, 0, 0, 1],
@@ -16,6 +16,7 @@ const dicasColuna = ["1 1", "1 1", "1", "1 1", "1 1"];
 
 export default function TelaJogoNonogram() {
   const { registrarResultadoMiniGame } = useDadosApp();
+  const { paleta, insetsChrome } = useTemaVisual();
   const gradeInicial = useMemo(() => Array.from({ length: 5 }, () => Array.from({ length: 5 }, () => 0)), []);
   const [gradeJogador, setGradeJogador] = useState(gradeInicial);
 
@@ -44,21 +45,34 @@ export default function TelaJogoNonogram() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.dicaTopo}>Dicas colunas: {dicasColuna.join(" | ")}</Text>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: paleta.fundoPrimario,
+          paddingTop: insetsChrome.paddingTopConteudo + 8,
+          paddingBottom: insetsChrome.paddingBottomConteudo + 8,
+        },
+      ]}
+    >
+      <Text style={[styles.dicaTopo, { color: paleta.textoSecundario }]}>Dicas colunas: {dicasColuna.join(" | ")}</Text>
       {gradeJogador.map((linhaAtual, indiceLinha) => (
         <View key={`linha-${indiceLinha}`} style={styles.linha}>
-          <Text style={styles.dicaLinha}>{dicasLinha[indiceLinha]}</Text>
+          <Text style={[styles.dicaLinha, { color: paleta.textoSecundario }]}>{dicasLinha[indiceLinha]}</Text>
           {linhaAtual.map((valorCelula, indiceColuna) => (
             <TouchableOpacity
               key={`coluna-${indiceColuna}`}
-              style={[styles.celula, valorCelula === 1 && styles.celulaMarcada]}
+              style={[
+                styles.celula,
+                { borderColor: paleta.bordaSuave, backgroundColor: paleta.fundoCartao },
+                valorCelula === 1 && { backgroundColor: paleta.destaque },
+              ]}
               onPress={() => alternarCelula(indiceLinha, indiceColuna)}
             />
           ))}
         </View>
       ))}
-      <TouchableOpacity style={styles.botaoValidar} onPress={validarSolucao}>
+      <TouchableOpacity style={[styles.botaoValidar, { backgroundColor: paleta.textoPrincipal }]} onPress={validarSolucao}>
         <Text style={styles.textoValidar}>Validar puzzle</Text>
       </TouchableOpacity>
     </View>
@@ -66,12 +80,11 @@ export default function TelaJogoNonogram() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: coresTema.fundoPrimario, padding: 16 },
-  dicaTopo: { color: coresTema.textoSecundario, marginBottom: 12 },
+  container: { flex: 1, paddingHorizontal: 16 },
+  dicaTopo: { marginBottom: 12 },
   linha: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
-  dicaLinha: { width: 36, color: coresTema.textoSecundario, fontSize: 12 },
-  celula: { width: 34, height: 34, borderWidth: 1, borderColor: coresTema.bordaSuave, backgroundColor: "#FFF" },
-  celulaMarcada: { backgroundColor: coresTema.destaque },
-  botaoValidar: { marginTop: 16, alignSelf: "flex-start", backgroundColor: coresTema.textoPrincipal, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 10 },
+  dicaLinha: { width: 36, fontSize: 12 },
+  celula: { width: 34, height: 34, borderWidth: 1 },
+  botaoValidar: { marginTop: 16, alignSelf: "flex-start", borderRadius: 8, paddingHorizontal: 14, paddingVertical: 10 },
   textoValidar: { color: "#FFF", fontWeight: "700" },
 });

@@ -28,7 +28,14 @@
     "plugins": [
       "expo-notifications",
       "expo-web-browser",
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "O LifeQuest usa imagens que voce escolhe para personalizar o rodape do app.",
+          "cameraPermission": "O LifeQuest pode usar a camera se voce preferir capturar uma imagem para o rodape."
+        }
+      ]
     ]
   }
 }

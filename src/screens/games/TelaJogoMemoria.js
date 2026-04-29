@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import coresTema from "../../constants/cores";
 import { useDadosApp } from "../../context/DadosAppContext";
+import { useTemaVisual } from "../../context/TemaVisualContext";
 
 function embaralharArray(listaOriginal) {
   return [...listaOriginal].sort(() => Math.random() - 0.5);
@@ -11,6 +11,7 @@ const simbolosMemoria = ["A", "B", "C", "D"];
 
 export default function TelaJogoMemoria() {
   const { registrarResultadoMiniGame } = useDadosApp();
+  const { paleta, insetsChrome } = useTemaVisual();
   const baralhoInicial = useMemo(
     () =>
       embaralharArray(
@@ -56,18 +57,31 @@ export default function TelaJogoMemoria() {
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: paleta.fundoPrimario,
+          paddingTop: insetsChrome.paddingTopConteudo + 8,
+          paddingBottom: insetsChrome.paddingBottomConteudo + 8,
+        },
+      ]}
+    >
       <View style={styles.grade}>
         {baralhoAtual.map((cartaAtual) => {
           const cartaRevelada = idsRevelados.includes(cartaAtual.idCarta) || paresEncontrados.includes(cartaAtual.simboloCarta);
           return (
-            <TouchableOpacity key={cartaAtual.idCarta} style={styles.carta} onPress={() => virarCarta(cartaAtual)}>
+            <TouchableOpacity
+              key={cartaAtual.idCarta}
+              style={[styles.carta, { backgroundColor: paleta.destaque }]}
+              onPress={() => virarCarta(cartaAtual)}
+            >
               <Text style={styles.simbolo}>{cartaRevelada ? cartaAtual.simboloCarta : "?"}</Text>
             </TouchableOpacity>
           );
         })}
       </View>
-      <TouchableOpacity style={styles.botaoReiniciar} onPress={reiniciar}>
+      <TouchableOpacity style={[styles.botaoReiniciar, { backgroundColor: paleta.textoPrincipal }]} onPress={reiniciar}>
         <Text style={styles.textoReiniciar}>Reiniciar</Text>
       </TouchableOpacity>
     </View>
@@ -75,10 +89,10 @@ export default function TelaJogoMemoria() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: coresTema.fundoPrimario, alignItems: "center", justifyContent: "center", padding: 12 },
+  container: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 12 },
   grade: { width: "100%", flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 8 },
-  carta: { width: "23%", aspectRatio: 1, backgroundColor: coresTema.destaque, borderRadius: 8, alignItems: "center", justifyContent: "center" },
+  carta: { width: "23%", aspectRatio: 1, borderRadius: 8, alignItems: "center", justifyContent: "center" },
   simbolo: { color: "#FFF", fontSize: 24, fontWeight: "700" },
-  botaoReiniciar: { marginTop: 20, backgroundColor: coresTema.textoPrincipal, borderRadius: 10, paddingHorizontal: 18, paddingVertical: 10 },
+  botaoReiniciar: { marginTop: 20, borderRadius: 10, paddingHorizontal: 18, paddingVertical: 10 },
   textoReiniciar: { color: "#FFF", fontWeight: "700" },
 });

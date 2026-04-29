@@ -1,18 +1,30 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import coresTema from "../constants/cores";
+import { useTemaVisual } from "../context/TemaVisualContext";
 
 export default function CartaoPadrao({ children }) {
-  return <View style={styles.cartao}>{children}</View>;
+  const { paleta } = useTemaVisual();
+
+  return (
+    <View
+      style={[
+        styles.cartao,
+        {
+          backgroundColor: paleta.fundoCartao,
+          borderColor: paleta.bordaSuave,
+        },
+      ]}
+    >
+      {children}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   cartao: {
-    backgroundColor: coresTema.fundoCartao,
     borderRadius: 12,
     padding: 14,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: coresTema.bordaSuave,
   },
 });

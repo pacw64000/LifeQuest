@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import coresTema from "../../constants/cores";
 import { useDadosApp } from "../../context/DadosAppContext";
+import { useTemaVisual } from "../../context/TemaVisualContext";
 
 const perguntasQuiz = [
   {
@@ -26,6 +26,7 @@ const perguntasQuiz = [
 
 export default function TelaJogoQuiz() {
   const { registrarResultadoMiniGame } = useDadosApp();
+  const { paleta, insetsChrome } = useTemaVisual();
   const [indicePerguntaAtual, setIndicePerguntaAtual] = useState(0);
   const [quantidadeAcertos, setQuantidadeAcertos] = useState(0);
 
@@ -48,11 +49,24 @@ export default function TelaJogoQuiz() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.pergunta}>{perguntaAtual.textoPergunta}</Text>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: paleta.fundoPrimario,
+          paddingTop: insetsChrome.paddingTopConteudo + 8,
+          paddingBottom: insetsChrome.paddingBottomConteudo + 8,
+        },
+      ]}
+    >
+      <Text style={[styles.pergunta, { color: paleta.textoPrincipal }]}>{perguntaAtual.textoPergunta}</Text>
       {perguntaAtual.opcoesResposta.map((respostaAtual, indiceResposta) => (
-        <TouchableOpacity key={respostaAtual} style={styles.botaoResposta} onPress={() => responder(indiceResposta)}>
-          <Text style={styles.textoResposta}>{respostaAtual}</Text>
+        <TouchableOpacity
+          key={respostaAtual}
+          style={[styles.botaoResposta, { borderColor: paleta.bordaSuave, backgroundColor: paleta.fundoCartao }]}
+          onPress={() => responder(indiceResposta)}
+        >
+          <Text style={[styles.textoResposta, { color: paleta.textoPrincipal }]}>{respostaAtual}</Text>
         </TouchableOpacity>
       ))}
     </View>
@@ -60,8 +74,8 @@ export default function TelaJogoQuiz() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: coresTema.fundoPrimario, padding: 16 },
-  pergunta: { fontSize: 20, fontWeight: "700", marginBottom: 16, color: coresTema.textoPrincipal },
-  botaoResposta: { backgroundColor: "#FFF", borderWidth: 1, borderColor: coresTema.bordaSuave, borderRadius: 10, padding: 14, marginBottom: 10 },
-  textoResposta: { color: coresTema.textoPrincipal, fontWeight: "600" },
+  container: { flex: 1, paddingHorizontal: 16 },
+  pergunta: { fontSize: 20, fontWeight: "700", marginBottom: 16 },
+  botaoResposta: { borderWidth: 1, borderRadius: 10, padding: 14, marginBottom: 10 },
+  textoResposta: { fontWeight: "600" },
 });

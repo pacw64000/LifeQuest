@@ -1,11 +1,17 @@
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
-import coresTema from "../constants/cores";
+import { useTemaVisual } from "../context/TemaVisualContext";
 
 export default function BotaoPrimario({ tituloBotao, onPress, desabilitado = false }) {
+  const { paleta } = useTemaVisual();
+
   return (
     <TouchableOpacity
-      style={[styles.botao, desabilitado && styles.botaoDesabilitado]}
+      style={[
+        styles.botao,
+        { backgroundColor: paleta.destaque },
+        desabilitado && styles.botaoDesabilitado,
+      ]}
       onPress={onPress}
       disabled={desabilitado}
     >
@@ -16,7 +22,6 @@ export default function BotaoPrimario({ tituloBotao, onPress, desabilitado = fal
 
 const styles = StyleSheet.create({
   botao: {
-    backgroundColor: coresTema.destaque,
     paddingVertical: 12,
     borderRadius: 10,
     alignItems: "center",

@@ -11,6 +11,8 @@ const dadosPadraoPerfil = {
   xpMiniGamesHoje: 0,
   dataControleMiniGame: null,
   tokenPush: "",
+  /** @type {Record<string, unknown> | null} tema da app (cor primaria, rodape, imagem) */
+  preferenciasTema: null,
 };
 
 export async function obterOuCriarPerfilUsuario(idUsuario, nomeUsuarioFallback = "") {
