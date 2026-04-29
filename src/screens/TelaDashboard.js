@@ -1,10 +1,27 @@
-import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { Component } from "react";
+import { ScrollView, StyleSheet, Text, View, ImageBackground } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { useDadosApp } from "../context/DadosAppContext";
 import CartaoPadrao from "../components/CartaoPadrao";
 import BotaoPrimario from "../components/BotaoPrimario";
 import coresTema from "../constants/cores";
+
+function Untitled(props) {
+  return (
+    <View style={styles.container}>
+      <ImageBackground
+        style={styles.rect}
+        imageStyle={styles.rect_imageStyle}
+        source={require("../assets/images/Gradient_JV33GZG.png")}
+      ></ImageBackground>
+      <ImageBackground
+        style={styles.rect2}
+        imageStyle={styles.rect2_imageStyle}
+        source={require("../assets/images/Gradient_H0Vzu6n.png")}
+      ></ImageBackground>
+    </View>
+  );
+}
 
 export default function TelaDashboard() {
   const { usuarioAutenticado, logout } = useAuth();
@@ -50,4 +67,15 @@ const styles = StyleSheet.create({
   textoInfo: { color: coresTema.textoSecundario },
   barraFundo: { backgroundColor: "#E8EAF4", height: 10, borderRadius: 999, marginTop: 10, overflow: "hidden" },
   barraValor: { backgroundColor: coresTema.destaque, height: "100%" },
+  rect: {
+    width: 375,
+    height: 119
+  },
+  rect_imageStyle: {},
+  rect2: {
+    width: 375,
+    height: 100,
+    marginTop: 593
+  },
+  rect2_imageStyle: {}
 });

@@ -1,9 +1,26 @@
-import React, { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { Component, useState } from "react";
+import { Alert, StyleSheet, Text, TextInput, View, ImageBackground } from "react-native";
 import BotaoPrimario from "../components/BotaoPrimario";
 import coresTema from "../constants/cores";
 import { useDadosApp } from "../context/DadosAppContext";
 import { agendarLembreteMissao } from "../services/notificacoes/servicoNotificacoes";
+
+function Untitled(props) {
+  return (
+    <View style={styles.container}>
+      <ImageBackground
+        style={styles.rect}
+        imageStyle={styles.rect_imageStyle}
+        source={require("../assets/images/Gradient_JV33GZG.png")}
+      ></ImageBackground>
+      <ImageBackground
+        style={styles.rect2}
+        imageStyle={styles.rect2_imageStyle}
+        source={require("../assets/images/Gradient_H0Vzu6n.png")}
+      ></ImageBackground>
+    </View>
+  );
+}
 
 export default function TelaCriarMissao({ navigation }) {
   const { criarMissao } = useDadosApp();
@@ -76,4 +93,15 @@ const styles = StyleSheet.create({
   inputMultiLinha: { minHeight: 90, textAlignVertical: "top" },
   label: { color: coresTema.textoSecundario, marginBottom: 8 },
   linhaDificuldade: { marginBottom: 12 },
+  rect: {
+    width: 375,
+    height: 119
+  },
+  rect_imageStyle: {},
+  rect2: {
+    width: 375,
+    height: 100,
+    marginTop: 593
+  },
+  rect2_imageStyle: {}
 });

@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { Component, useState } from "react";
+import { Alert, ImageBackground, StyleSheet, Text, TextInput, View } from "react-native";
 import BotaoPrimario from "../../components/BotaoPrimario";
 import { useAuth } from "../../context/AuthContext";
 import coresTema from "../../constants/cores";
 
-export default function TelaCadastro({ navigation }) {
+function TelaCadastro({ navigation }) {
   const { cadastrarComEmailSenha } = useAuth();
   const [nomeUsuario, setNomeUsuario] = useState("");
   const [emailUsuario, setEmailUsuario] = useState("");
@@ -22,6 +22,16 @@ export default function TelaCadastro({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <ImageBackground
+        style={styles.rect}
+        imageStyle={styles.rect_imageStyle}
+        source={require("../../assets/images/Gradient_JV33GZG.png")}
+      ></ImageBackground>
+      <ImageBackground
+        style={styles.rect2}
+        imageStyle={styles.rect2_imageStyle}
+        source={require("../../assets/images/Gradient_H0Vzu6n.png")}
+      ></ImageBackground>
       <Text style={styles.titulo}>Criar Conta</Text>
       <TextInput placeholder="Nome de usuario" value={nomeUsuario} onChangeText={setNomeUsuario} style={styles.input} />
       <TextInput
@@ -49,4 +59,17 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 10,
   },
+  rect: {
+    width: 375,
+    height: 119,
+  },
+  rect_imageStyle: {},
+  rect2: {
+    width: 375,
+    height: 100,
+    marginTop: 593,
+  },
+  rect2_imageStyle: {},
 });
+
+export default TelaCadastro;

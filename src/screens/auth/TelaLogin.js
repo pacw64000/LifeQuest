@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { Component, useState } from "react";
+import { Alert, ImageBackground, StyleSheet, Text, TextInput, View } from "react-native";
 import BotaoPrimario from "../../components/BotaoPrimario";
 import { useAuth } from "../../context/AuthContext";
 import coresTema from "../../constants/cores";
 import rotas from "../../constants/rotas";
 
-export default function TelaLogin({ navigation }) {
+function TelaLogin({ navigation }) {
   const { loginComEmailSenha, loginComGoogle, loginComoConvidado } = useAuth();
   const [emailUsuario, setEmailUsuario] = useState("");
   const [senhaUsuario, setSenhaUsuario] = useState("");
@@ -43,6 +43,17 @@ export default function TelaLogin({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <ImageBackground
+        style={styles.rect}
+        imageStyle={styles.rect_imageStyle}
+        source={require("../../assets/images/Gradient_JV33GZG.png")}
+      ></ImageBackground>
+      <ImageBackground
+        style={styles.rect2}
+        imageStyle={styles.rect2_imageStyle}
+        source={require("../../assets/images/Gradient_H0Vzu6n.png")}
+      ></ImageBackground>
+
       <Text style={styles.titulo}>LifeQuest</Text>
       <Text style={styles.subtitulo}>Transforme tarefas em aventuras</Text>
 
@@ -91,4 +102,17 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 10,
   },
+  rect: {
+    width: 375,
+    height: 119,
+  },
+  rect_imageStyle: {},
+  rect2: {
+    width: 375,
+    height: 100,
+    marginTop: 593,
+  },
+  rect2_imageStyle: {},
 });
+
+export default TelaLogin;
