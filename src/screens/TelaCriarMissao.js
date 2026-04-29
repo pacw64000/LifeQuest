@@ -5,6 +5,7 @@ import { useDadosApp } from "../context/DadosAppContext";
 import { useTemaVisual } from "../context/TemaVisualContext";
 import { agendarLembreteMissao } from "../services/notificacoes/servicoNotificacoes";
 import { espacamento } from "../constants/layout";
+import { fetchMissionsFromGemini } from "../services/gemini.js"
 
 export default function TelaCriarMissao({ navigation }) {
   const { criarMissao } = useDadosApp();
@@ -13,27 +14,34 @@ export default function TelaCriarMissao({ navigation }) {
   const [descricaoMissao, setDescricaoMissao] = useState("");
   const [dificuldadeMissao, setDificuldadeMissao] = useState("facil");
   const [segundosLembreteTexto, setSegundosLembreteTexto] = useState("0");
+  const [tema, set_tema] = useState("aleatorio");
 
-  async function acaoSalvarMissao() {
-    if (!tituloMissao.trim()) {
-      Alert.alert("Missao invalida", "Informe um titulo.");
-      return;
-    }
+  async function acaoSalvarMissao(aleatorio) {
+    if (aleatorio) {
+      const missao = await fetchMissionsFromGemini(tema, dificuldadeMissao);
+      const novaMissao = criarMissao(missao);
+      
+    } else {
+      if (!tituloMissao.trim()) {
+        Alert.alert("Missao invalida", "Informe um titulo.");
+        return;
+      }
 
-    const segundosLembrete = Number(segundosLembreteTexto || "0");
-    const novaMissao = criarMissao({
-      tituloMissao: tituloMissao.trim(),
-      descricaoMissao: descricaoMissao.trim(),
-      dificuldadeMissao,
-      segundosLembrete,
-    });
-
-    if (segundosLembrete > 0) {
-      await agendarLembreteMissao({
-        idMissao: novaMissao.idMissao,
-        tituloMissao: novaMissao.tituloMissao,
-        segundosParaLembrar: segundosLembrete,
+      const segundosLembrete = Number(segundosLembreteTexto || "0");
+      const novaMissao = criarMissao({
+        tituloMissao: tituloMissao.trim(),
+        descricaoMissao: descricaoMissao.trim(),
+        dificuldadeMissao,
+        segundosLembrete,
       });
+
+      if (segundosLembrete > 0) {
+        await agendarLembreteMissao({
+          idMissao: novaMissao.idMissao,
+          tituloMissao: novaMissao.tituloMissao,
+          segundosParaLembrar: segundosLembrete,
+        });
+      }
     }
 
     navigation.goBack();
@@ -59,6 +67,7 @@ export default function TelaCriarMissao({ navigation }) {
       keyboardShouldPersistTaps="handled"
     >
       <TextInput style={inputStyle} placeholder="Titulo da missao" placeholderTextColor={paleta.textoSecundario} value={tituloMissao} onChangeText={setTituloMissao} />
+      <TextInput style={styles.input} placeholder="Tema da missao" value={tema} onChangeText={set_tema} />
       <TextInput
         style={[inputStyle, styles.inputMultiLinha]}
         placeholder="Descricao"
@@ -87,6 +96,8 @@ export default function TelaCriarMissao({ navigation }) {
         keyboardType="numeric"
       />
       <BotaoPrimario tituloBotao="Salvar missao" onPress={acaoSalvarMissao} />
+
+      <BotaoPrimario tituloBotao="Criar missão aleatoria" onPress={()=>acaoSalvarMissao(true)} />
     </ScrollView>
   );
 }
