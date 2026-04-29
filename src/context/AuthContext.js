@@ -21,6 +21,7 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [usuarioAutenticado, setUsuarioAutenticado] = useState(null);
   const [carregandoAutenticacao, setCarregandoAutenticacao] = useState(true);
+  const [modoConvidado, setModoConvidado] = useState(false);
 
   const [requisicaoGoogle, respostaGoogle, acionarPromptGoogle] = Google.useAuthRequest({
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
@@ -31,6 +32,10 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const desinscrever = onAuthStateChanged(autenticacaoFirebase, async (usuarioFirebase) => {
       if (!usuarioFirebase) {
+        if (modoConvidado) {
+          setCarregandoAutenticacao(false);
+          return;
+        }
         setUsuarioAutenticado(null);
         await AsyncStorage.removeItem(chaveStorageUsuario);
         setCarregandoAutenticacao(false);
@@ -42,13 +47,37 @@ export function AuthProvider({ children }) {
         idUsuario: usuarioFirebase.uid,
         emailUsuario: usuarioFirebase.email || "",
         nomeUsuario: usuarioFirebase.displayName || "Aventureiro",
+        isGuest: false,
       };
+      setModoConvidado(false);
       setUsuarioAutenticado(dadosUsuario);
       await AsyncStorage.setItem(chaveStorageUsuario, JSON.stringify(dadosUsuario));
       setCarregandoAutenticacao(false);
     });
 
     return desinscrever;
+  }, [modoConvidado]);
+
+  useEffect(() => {
+    async function restaurarSessaoLocal() {
+      try {
+        const usuarioStorage = await AsyncStorage.getItem(chaveStorageUsuario);
+        if (!usuarioStorage) {
+          return;
+        }
+        const dadosUsuario = JSON.parse(usuarioStorage);
+        if (dadosUsuario?.isGuest) {
+          setUsuarioAutenticado(dadosUsuario);
+          setModoConvidado(true);
+        }
+      } catch (erro) {
+        await AsyncStorage.removeItem(chaveStorageUsuario);
+      } finally {
+        setCarregandoAutenticacao(false);
+      }
+    }
+
+    restaurarSessaoLocal();
   }, []);
 
   useEffect(() => {
@@ -84,7 +113,26 @@ export function AuthProvider({ children }) {
     await acionarPromptGoogle();
   }
 
+  async function loginComoConvidado() {
+    const dadosConvidado = {
+      idUsuario: "guest-local",
+      emailUsuario: "",
+      nomeUsuario: "Convidado",
+      isGuest: true,
+    };
+    setModoConvidado(true);
+    setUsuarioAutenticado(dadosConvidado);
+    setCarregandoAutenticacao(false);
+    await AsyncStorage.setItem(chaveStorageUsuario, JSON.stringify(dadosConvidado));
+  }
+
   async function logout() {
+    if (modoConvidado) {
+      setModoConvidado(false);
+      setUsuarioAutenticado(null);
+      await AsyncStorage.removeItem(chaveStorageUsuario);
+      return;
+    }
     await signOut(autenticacaoFirebase);
   }
 
@@ -95,9 +143,10 @@ export function AuthProvider({ children }) {
       loginComEmailSenha,
       cadastrarComEmailSenha,
       loginComGoogle,
+      loginComoConvidado,
       logout,
     }),
-    [usuarioAutenticado, carregandoAutenticacao, requisicaoGoogle]
+    [usuarioAutenticado, carregandoAutenticacao, requisicaoGoogle, modoConvidado]
   );
 
   return <AuthContext.Provider value={valorContexto}>{children}</AuthContext.Provider>;

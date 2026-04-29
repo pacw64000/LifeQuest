@@ -2,12 +2,13 @@ import React, { createContext, useContext, useMemo, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { calcularNivelPorXp, calcularXpMissaoPorDificuldade } from "../utils/calculoProgresso";
 import {
-  atualizarMissaoNoFirebase,
-  criarMissaoNoFirebase,
-  excluirMissaoNoFirebase,
-  listarMissoesPorUsuario,
-} from "../services/firebase/repositorioMissoes";
-import { atualizarPerfilUsuario, obterOuCriarPerfilUsuario } from "../services/firebase/repositorioPerfil";
+  atualizarMissaoComFallback,
+  carregarDadosDoUsuario,
+  excluirMissaoComFallback,
+  persistirMissaoComFallback,
+  persistirPerfilComFallback,
+  sincronizarPendenciasDoUsuario,
+} from "../services/sincronizacao/servicoSincronizacaoUsuario";
 
 const DadosAppContext = createContext(null);
 const limiteXpMiniGameDiario = Number(process.env.EXPO_PUBLIC_DAILY_MINIGAME_XP_LIMIT || 200);
@@ -32,20 +33,28 @@ export function DadosAppProvider({ children }) {
     async function carregarDadosIniciais() {
       if (!usuarioAutenticado?.idUsuario) {
         setListaMissoes([]);
+        setExpAtual(0);
+        setStreakAtual(0);
+        setDataUltimaMissaoConcluida(null);
+        setListaConquistasDesbloqueadas([]);
+        setXpMiniGamesHoje(0);
+        setDataControleMiniGames(null);
         return;
       }
       try {
-        const [missoesFirebase, perfilFirebase] = await Promise.all([
-          listarMissoesPorUsuario(usuarioAutenticado.idUsuario),
-          obterOuCriarPerfilUsuario(usuarioAutenticado.idUsuario, usuarioAutenticado.nomeUsuario),
-        ]);
-        setListaMissoes(missoesFirebase);
-        setExpAtual(perfilFirebase.expAtual || 0);
-        setStreakAtual(perfilFirebase.streakAtual || 0);
-        setDataUltimaMissaoConcluida(perfilFirebase.ultimoDiaCompletado || null);
-        setListaConquistasDesbloqueadas(perfilFirebase.conquistasDesbloqueadas || []);
-        setXpMiniGamesHoje(perfilFirebase.xpMiniGamesHoje || 0);
-        setDataControleMiniGames(perfilFirebase.dataControleMiniGame || null);
+        const permitirNuvem = !usuarioAutenticado?.isGuest;
+        const { missoes, perfil } = await carregarDadosDoUsuario(
+          usuarioAutenticado.idUsuario,
+          usuarioAutenticado.nomeUsuario,
+          permitirNuvem
+        );
+        setListaMissoes(missoes);
+        setExpAtual(perfil.expAtual || 0);
+        setStreakAtual(perfil.streakAtual || 0);
+        setDataUltimaMissaoConcluida(perfil.ultimoDiaCompletado || null);
+        setListaConquistasDesbloqueadas(perfil.conquistasDesbloqueadas || []);
+        setXpMiniGamesHoje(perfil.xpMiniGamesHoje || 0);
+        setDataControleMiniGames(perfil.dataControleMiniGame || null);
       } catch (erro) {
         // O app continua funcional localmente mesmo se o backend falhar.
       }
@@ -55,11 +64,9 @@ export function DadosAppProvider({ children }) {
 
   async function salvarPerfilParcial(dadosAtualizadosPerfil) {
     if (!usuarioAutenticado?.idUsuario) return;
-    try {
-      await atualizarPerfilUsuario(usuarioAutenticado.idUsuario, dadosAtualizadosPerfil);
-    } catch (erro) {
-      // Evita quebra de UX em caso de falha de rede.
-    }
+    const permitirNuvem = !usuarioAutenticado?.isGuest;
+    await persistirPerfilComFallback(usuarioAutenticado.idUsuario, dadosAtualizadosPerfil, permitirNuvem);
+    if (permitirNuvem) sincronizarPendenciasDoUsuario(usuarioAutenticado.idUsuario).catch(() => {});
   }
 
   function criarMissao({ tituloMissao, descricaoMissao, dificuldadeMissao, segundosLembrete = 0 }) {
@@ -77,7 +84,10 @@ export function DadosAppProvider({ children }) {
     };
     setListaMissoes((estadoAnterior) => [novaMissao, ...estadoAnterior]);
     if (usuarioAutenticado?.idUsuario) {
-      criarMissaoNoFirebase(usuarioAutenticado.idUsuario, novaMissao).catch(() => {});
+      const permitirNuvem = !usuarioAutenticado?.isGuest;
+      persistirMissaoComFallback(usuarioAutenticado.idUsuario, novaMissao, permitirNuvem).then(() => {
+        if (permitirNuvem) sincronizarPendenciasDoUsuario(usuarioAutenticado.idUsuario).catch(() => {});
+      });
     }
     return novaMissao;
   }
@@ -85,7 +95,10 @@ export function DadosAppProvider({ children }) {
   function removerMissao(idMissao) {
     setListaMissoes((estadoAnterior) => estadoAnterior.filter((missaoAtual) => missaoAtual.idMissao !== idMissao));
     if (usuarioAutenticado?.idUsuario) {
-      excluirMissaoNoFirebase(usuarioAutenticado.idUsuario, idMissao).catch(() => {});
+      const permitirNuvem = !usuarioAutenticado?.isGuest;
+      excluirMissaoComFallback(usuarioAutenticado.idUsuario, idMissao, permitirNuvem).then(() => {
+        if (permitirNuvem) sincronizarPendenciasDoUsuario(usuarioAutenticado.idUsuario).catch(() => {});
+      });
     }
   }
 
@@ -143,10 +156,13 @@ export function DadosAppProvider({ children }) {
         xpGanhoMissao = calcularXpMissaoPorDificuldade(missaoAtual.dificuldadeMissao);
         totalMissoesConcluidas += 1;
         if (usuarioAutenticado?.idUsuario) {
-          atualizarMissaoNoFirebase(usuarioAutenticado.idUsuario, missaoAtual.idMissao, {
+          const permitirNuvem = !usuarioAutenticado?.isGuest;
+          atualizarMissaoComFallback(usuarioAutenticado.idUsuario, missaoAtual.idMissao, {
             concluida: true,
             dataConclusao: new Date().toISOString(),
-          }).catch(() => {});
+          }, permitirNuvem).then(() => {
+            if (permitirNuvem) sincronizarPendenciasDoUsuario(usuarioAutenticado.idUsuario).catch(() => {});
+          });
         }
         return { ...missaoAtual, concluida: true, dataConclusao: new Date().toISOString() };
       })

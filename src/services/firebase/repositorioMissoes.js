@@ -1,11 +1,11 @@
 import {
-  addDoc,
   collection,
   deleteDoc,
   doc,
   getDocs,
   orderBy,
   query,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import { bancoDadosFirebase } from "./config";
@@ -21,8 +21,10 @@ export async function listarMissoesPorUsuario(idUsuario) {
 }
 
 export async function criarMissaoNoFirebase(idUsuario, dadosMissao) {
-  const resposta = await addDoc(obterColecaoMissoes(idUsuario), dadosMissao);
-  return resposta.id;
+  const idMissao = dadosMissao.idMissao || `${Date.now()}`;
+  const referenciaDocumento = doc(bancoDadosFirebase, "usuarios", idUsuario, "missoes", idMissao);
+  await setDoc(referenciaDocumento, { ...dadosMissao, idMissao });
+  return idMissao;
 }
 
 export async function atualizarMissaoNoFirebase(idUsuario, idMissao, dadosAtualizados) {

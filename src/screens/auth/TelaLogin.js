@@ -6,15 +6,30 @@ import coresTema from "../../constants/cores";
 import rotas from "../../constants/rotas";
 
 export default function TelaLogin({ navigation }) {
-  const { loginComEmailSenha, loginComGoogle } = useAuth();
+  const { loginComEmailSenha, loginComGoogle, loginComoConvidado } = useAuth();
   const [emailUsuario, setEmailUsuario] = useState("");
   const [senhaUsuario, setSenhaUsuario] = useState("");
 
+  function traduzirErroLogin(mensagemErroOriginal) {
+    if (mensagemErroOriginal?.includes("auth/invalid-credential")) {
+      return "Email ou senha invalidos.";
+    }
+    if (mensagemErroOriginal?.includes("auth/invalid-email")) {
+      return "Formato de email invalido.";
+    }
+    return mensagemErroOriginal || "Nao foi possivel entrar no momento.";
+  }
+
   async function acaoEntrarComEmail() {
+    const emailNormalizado = emailUsuario.trim().toLowerCase();
+    if (!emailNormalizado || !senhaUsuario.trim()) {
+      Alert.alert("Campos obrigatorios", "Preencha email e senha para continuar.");
+      return;
+    }
     try {
-      await loginComEmailSenha(emailUsuario.trim(), senhaUsuario);
+      await loginComEmailSenha(emailNormalizado, senhaUsuario.trim());
     } catch (erro) {
-      Alert.alert("Falha no login", erro.message);
+      Alert.alert("Falha no login", traduzirErroLogin(erro.message));
     }
   }
 
@@ -36,7 +51,9 @@ export default function TelaLogin({ navigation }) {
         value={emailUsuario}
         onChangeText={setEmailUsuario}
         keyboardType="email-address"
+        textContentType="emailAddress"
         autoCapitalize="none"
+        autoCorrect={false}
         style={styles.input}
       />
       <TextInput
@@ -44,11 +61,14 @@ export default function TelaLogin({ navigation }) {
         value={senhaUsuario}
         onChangeText={setSenhaUsuario}
         secureTextEntry
+        textContentType="password"
+        autoCorrect={false}
         style={styles.input}
       />
 
       <BotaoPrimario tituloBotao="Entrar" onPress={acaoEntrarComEmail} />
       <BotaoPrimario tituloBotao="Entrar com Google" onPress={acaoEntrarComGoogle} />
+      <BotaoPrimario tituloBotao="Entrar como Convidado" onPress={loginComoConvidado} />
       <BotaoPrimario tituloBotao="Criar conta" onPress={() => navigation.navigate(rotas.cadastro)} />
     </View>
   );
