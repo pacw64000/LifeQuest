@@ -19,7 +19,7 @@ import { normalizarHex } from "../utils/gerarPaletaTema";
 import { copiarImagemRodapeParaDocumentos } from "../services/aparencia/copiarImagemRodapeLocal";
 import { espacamento, raio, tipografia } from "../constants/layout";
 
-const PRESETS = ["#6C5CE7", "#0984E3", "#00B894", "#E17055", "#A29BFE", "#2D3436", "#D63031", "#FDCB6E"];
+const PRESETS = ["#26D0CE", "#F4C15A", "#6C5CE7", "#0984E3", "#00B894", "#E17055", "#A29BFE", "#D63031"];
 
 export default function TelaConfiguracoesAparencia({ navigation }) {
   const { preferencias, paleta, salvarPreferencias, insetsChrome } = useTemaVisual();
@@ -61,7 +61,7 @@ export default function TelaConfiguracoesAparencia({ navigation }) {
   async function aplicarCorPrimaria() {
     const cor = normalizarHex(hexTexto);
     if (cor.length !== 7) {
-      Alert.alert("Cor invalida", "Use um hex como #6C5CE7.");
+      Alert.alert("Cor invalida", "Use um hex como #26D0CE.");
       return;
     }
     await salvarPreferencias({ corPrimaria: cor });
@@ -117,7 +117,11 @@ export default function TelaConfiguracoesAparencia({ navigation }) {
         {PRESETS.map((cor) => (
           <TouchableOpacity
             key={cor}
-            style={[styles.swatch, { backgroundColor: cor }, preferencias.corPrimaria === cor && styles.swatchAtivo]}
+            style={[
+              styles.swatch,
+              { backgroundColor: cor },
+              preferencias.corPrimaria === cor && { borderColor: paleta.destaqueSecundario, borderWidth: 3 },
+            ]}
             onPress={() => {
               setHexTexto(cor);
               salvarPreferencias({ corPrimaria: cor });
@@ -133,7 +137,7 @@ export default function TelaConfiguracoesAparencia({ navigation }) {
           value={hexTexto}
           onChangeText={setHexTexto}
           autoCapitalize="characters"
-          placeholder="#6C5CE7"
+          placeholder="#26D0CE"
           placeholderTextColor={paleta.textoSecundario}
         />
         <BotaoPrimario tituloBotao="Aplicar" onPress={aplicarCorPrimaria} />
@@ -142,13 +146,27 @@ export default function TelaConfiguracoesAparencia({ navigation }) {
       <Text style={[styles.secao, { color: paleta.textoPrincipal }]}>Rodape</Text>
       <View style={styles.modoRow}>
         <TouchableOpacity
-          style={[styles.modoBtn, preferencias.modoRodape === "gradiente" && styles.modoBtnAtivo]}
+          style={[
+            styles.modoBtn,
+            { borderColor: paleta.bordaSuave, backgroundColor: paleta.fundoCartao },
+            preferencias.modoRodape === "gradiente" && {
+              borderColor: paleta.destaque,
+              backgroundColor: `${paleta.destaque}22`,
+            },
+          ]}
           onPress={() => salvarPreferencias({ modoRodape: "gradiente" })}
         >
           <Text style={[styles.modoBtnTexto, { color: paleta.textoPrincipal }]}>Gradiente</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.modoBtn, preferencias.modoRodape === "imagem" && styles.modoBtnAtivo]}
+          style={[
+            styles.modoBtn,
+            { borderColor: paleta.bordaSuave, backgroundColor: paleta.fundoCartao },
+            preferencias.modoRodape === "imagem" && {
+              borderColor: paleta.destaque,
+              backgroundColor: `${paleta.destaque}22`,
+            },
+          ]}
           onPress={() => salvarPreferencias({ modoRodape: "imagem" })}
         >
           <Text style={[styles.modoBtnTexto, { color: paleta.textoPrincipal }]}>Imagem</Text>
@@ -201,7 +219,6 @@ const styles = StyleSheet.create({
   secao: { fontSize: tipografia.tituloSecao, fontWeight: "700", marginTop: espacamento.md, marginBottom: espacamento.sm },
   presetRow: { flexDirection: "row", flexWrap: "wrap", gap: espacamento.sm, marginBottom: espacamento.md },
   swatch: { width: 40, height: 40, borderRadius: 20, borderWidth: 2, borderColor: "transparent" },
-  swatchAtivo: { borderColor: "#000" },
   label: { marginBottom: 6, fontSize: tipografia.legenda },
   linhaHex: { gap: espacamento.sm, marginBottom: espacamento.md },
   inputHex: {
@@ -218,9 +235,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: raio.botao,
     borderWidth: 1,
-    borderColor: "#ccc",
     alignItems: "center",
   },
-  modoBtnAtivo: { borderColor: "#6C5CE7", backgroundColor: "rgba(108,92,231,0.12)" },
   modoBtnTexto: { fontWeight: "700" },
 });

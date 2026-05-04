@@ -3,11 +3,12 @@ import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import BotaoPrimario from "../../components/BotaoPrimario";
 import FundoGradienteDecorativo from "../../components/FundoGradienteDecorativo";
 import { useAuth } from "../../context/AuthContext";
-import coresTema from "../../constants/cores";
+import { useTemaVisual } from "../../context/TemaVisualContext";
 import rotas from "../../constants/rotas";
 
 function TelaLogin({ navigation }) {
   const { loginComEmailSenha, loginComGoogle, loginComoConvidado } = useAuth();
+  const { paleta } = useTemaVisual();
   const [emailUsuario, setEmailUsuario] = useState("");
   const [senhaUsuario, setSenhaUsuario] = useState("");
 
@@ -42,35 +43,47 @@ function TelaLogin({ navigation }) {
     }
   }
 
+  const estiloInput = [
+    styles.input,
+    {
+      borderColor: paleta.bordaSuave,
+      backgroundColor: paleta.fundoCartao,
+      color: paleta.textoPrincipal,
+    },
+  ];
+
   return (
     <FundoGradienteDecorativo style={styles.container}>
-      <Text style={styles.titulo}>LifeQuest</Text>
-      <Text style={styles.subtitulo}>Transforme tarefas em aventuras</Text>
+      <Text style={[styles.marca, { color: paleta.destaqueSecundario }]}>LifeQuest</Text>
+      <Text style={[styles.tagline, { color: paleta.textoPrincipal }]}>Sua jornada comeca aqui</Text>
+      <Text style={[styles.subtitulo, { color: paleta.textoSecundario }]}>Transforme tarefas em aventuras</Text>
 
       <TextInput
         placeholder="Email"
+        placeholderTextColor={paleta.textoSecundario}
         value={emailUsuario}
         onChangeText={setEmailUsuario}
         keyboardType="email-address"
         textContentType="emailAddress"
         autoCapitalize="none"
         autoCorrect={false}
-        style={styles.input}
+        style={estiloInput}
       />
       <TextInput
         placeholder="Senha"
+        placeholderTextColor={paleta.textoSecundario}
         value={senhaUsuario}
         onChangeText={setSenhaUsuario}
         secureTextEntry
         textContentType="password"
         autoCorrect={false}
-        style={styles.input}
+        style={estiloInput}
       />
 
       <BotaoPrimario tituloBotao="Entrar" onPress={acaoEntrarComEmail} />
-      <BotaoPrimario tituloBotao="Entrar com Google" onPress={acaoEntrarComGoogle} />
-      <BotaoPrimario tituloBotao="Entrar como Convidado" onPress={loginComoConvidado} />
-      <BotaoPrimario tituloBotao="Criar conta" onPress={() => navigation.navigate(rotas.cadastro)} />
+      <BotaoPrimario tituloBotao="Entrar com Google" onPress={acaoEntrarComGoogle} variante="secundario" />
+      <BotaoPrimario tituloBotao="Entrar como Convidado" onPress={loginComoConvidado} variante="secundario" />
+      <BotaoPrimario tituloBotao="Criar conta" onPress={() => navigation.navigate(rotas.cadastro)} variante="secundario" />
     </FundoGradienteDecorativo>
   );
 }
@@ -78,19 +91,33 @@ function TelaLogin({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: coresTema.fundoPrimario,
-    padding: 20,
+    padding: 24,
     justifyContent: "center",
   },
-  titulo: { fontSize: 34, fontWeight: "800", color: coresTema.destaque, marginBottom: 6 },
-  subtitulo: { color: coresTema.textoSecundario, marginBottom: 18 },
+  marca: {
+    fontSize: 38,
+    fontWeight: "900",
+    letterSpacing: 1,
+    marginBottom: 4,
+    textAlign: "center",
+  },
+  tagline: {
+    fontSize: 18,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 6,
+  },
+  subtitulo: {
+    textAlign: "center",
+    marginBottom: 28,
+    fontSize: 15,
+  },
   input: {
     borderWidth: 1,
-    borderColor: coresTema.bordaSuave,
-    borderRadius: 10,
-    backgroundColor: "#FFF",
-    padding: 12,
-    marginBottom: 10,
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 12,
+    fontSize: 16,
   },
 });
 

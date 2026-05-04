@@ -3,10 +3,11 @@ import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import BotaoPrimario from "../../components/BotaoPrimario";
 import FundoGradienteDecorativo from "../../components/FundoGradienteDecorativo";
 import { useAuth } from "../../context/AuthContext";
-import coresTema from "../../constants/cores";
+import { useTemaVisual } from "../../context/TemaVisualContext";
 
 function TelaCadastro({ navigation }) {
   const { cadastrarComEmailSenha } = useAuth();
+  const { paleta } = useTemaVisual();
   const [nomeUsuario, setNomeUsuario] = useState("");
   const [emailUsuario, setEmailUsuario] = useState("");
   const [senhaUsuario, setSenhaUsuario] = useState("");
@@ -21,34 +22,56 @@ function TelaCadastro({ navigation }) {
     }
   }
 
+  const estiloInput = [
+    styles.input,
+    {
+      borderColor: paleta.bordaSuave,
+      backgroundColor: paleta.fundoCartao,
+      color: paleta.textoPrincipal,
+    },
+  ];
+
   return (
     <FundoGradienteDecorativo style={styles.container}>
-      <Text style={styles.titulo}>Criar Conta</Text>
-      <TextInput placeholder="Nome de usuario" value={nomeUsuario} onChangeText={setNomeUsuario} style={styles.input} />
+      <Text style={[styles.titulo, { color: paleta.textoPrincipal }]}>Criar Conta</Text>
+      <TextInput
+        placeholder="Nome de usuario"
+        placeholderTextColor={paleta.textoSecundario}
+        value={nomeUsuario}
+        onChangeText={setNomeUsuario}
+        style={estiloInput}
+      />
       <TextInput
         placeholder="Email"
+        placeholderTextColor={paleta.textoSecundario}
         value={emailUsuario}
         onChangeText={setEmailUsuario}
         keyboardType="email-address"
         autoCapitalize="none"
-        style={styles.input}
+        style={estiloInput}
       />
-      <TextInput placeholder="Senha" value={senhaUsuario} onChangeText={setSenhaUsuario} secureTextEntry style={styles.input} />
+      <TextInput
+        placeholder="Senha"
+        placeholderTextColor={paleta.textoSecundario}
+        value={senhaUsuario}
+        onChangeText={setSenhaUsuario}
+        secureTextEntry
+        style={estiloInput}
+      />
       <BotaoPrimario tituloBotao="Cadastrar" onPress={acaoCadastrar} />
     </FundoGradienteDecorativo>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: coresTema.fundoPrimario, padding: 20, justifyContent: "center" },
-  titulo: { fontSize: 26, fontWeight: "700", color: coresTema.textoPrincipal, marginBottom: 14 },
+  container: { flex: 1, padding: 20, justifyContent: "center" },
+  titulo: { fontSize: 26, fontWeight: "800", marginBottom: 18, textAlign: "center" },
   input: {
     borderWidth: 1,
-    borderColor: coresTema.bordaSuave,
-    backgroundColor: "#FFF",
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 10,
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 12,
+    fontSize: 16,
   },
 });
 

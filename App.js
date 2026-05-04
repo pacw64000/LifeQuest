@@ -15,7 +15,7 @@ export default function App() {
         <TemaVisualProvider>
           <DadosAppProvider>
             <NavigationContainer>
-              <StatusBar style="dark" />
+              <StatusBar style="light" />
               <NavegacaoRaiz />
             </NavigationContainer>
           </DadosAppProvider>
