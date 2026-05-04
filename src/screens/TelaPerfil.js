@@ -36,8 +36,8 @@ export default function TelaPerfil({ navigation }) {
           <Pressable style={styles.botaoEngrenagem} onPress={() => navigation.navigate(rotas.configuracoesAparencia)} hitSlop={12}>
             <Ionicons name="color-palette-outline" size={24} color={paleta.textoSobreGradiente} />
           </Pressable>
-          <View style={[styles.avatar, { borderColor: paleta.textoSobreGradiente }]}>
-            <Text style={[styles.avatarTexto, { color: paleta.destaque }]}>{iniciais(nome)}</Text>
+          <View style={[styles.avatar, { borderColor: paleta.destaqueSecundario, backgroundColor: paleta.fundoCartao }]}>
+            <Text style={[styles.avatarTexto, { color: paleta.destaqueSecundario }]}>{iniciais(nome)}</Text>
           </View>
           <Text style={[styles.nome, { color: paleta.textoSobreGradiente }]}>{nome}</Text>
           {email ? <Text style={[styles.email, { color: paleta.textoSobreGradiente }]}>{email}</Text> : null}
@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
     width: 88,
     height: 88,
     borderRadius: 44,
-    backgroundColor: "#FFF",
     borderWidth: 3,
     alignItems: "center",
     justifyContent: "center",

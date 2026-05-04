@@ -77,7 +77,7 @@ export default function TelaJogoSnake() {
       ]}
     >
       <Text style={[styles.pontuacao, { color: paleta.textoPrincipal }]}>Pontuacao: {pontuacaoSnake}</Text>
-      <View style={[styles.grade, { borderColor: paleta.bordaSuave }]}>
+      <View style={[styles.grade, { borderColor: paleta.bordaSuave, backgroundColor: paleta.fundoProfundo || paleta.fundoCartao }]}>
         {Array.from({ length: tamanhoGrade * tamanhoGrade }).map((_, indiceCelula) => {
           const x = indiceCelula % tamanhoGrade;
           const y = Math.floor(indiceCelula / tamanhoGrade);
@@ -88,8 +88,9 @@ export default function TelaJogoSnake() {
               key={indiceCelula}
               style={[
                 styles.celula,
+                { borderColor: paleta.bordaSuave },
                 celulaCobra && { backgroundColor: paleta.destaque },
-                celulaComida && { backgroundColor: paleta.alerta },
+                celulaComida && { backgroundColor: paleta.destaqueSecundario },
               ]}
             />
           );
@@ -124,8 +125,8 @@ export default function TelaJogoSnake() {
         </TouchableOpacity>
       </View>
       {!jogoAtivo && (
-        <TouchableOpacity style={[styles.botaoReiniciar, { backgroundColor: paleta.textoPrincipal }]} onPress={reiniciarSnake}>
-          <Text style={styles.textoReiniciar}>Jogar novamente</Text>
+        <TouchableOpacity style={[styles.botaoReiniciar, { backgroundColor: paleta.destaque }]} onPress={reiniciarSnake}>
+          <Text style={[styles.textoReiniciar, { color: "#0A1628" }]}>Jogar novamente</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -135,11 +136,11 @@ export default function TelaJogoSnake() {
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: "center", paddingHorizontal: 12 },
   pontuacao: { fontWeight: "700", marginBottom: 10 },
-  grade: { width: 280, height: 280, flexDirection: "row", flexWrap: "wrap", backgroundColor: "#FFF", borderWidth: 1 },
-  celula: { width: "10%", height: "10%", borderWidth: 0.5, borderColor: "#F0F0F0" },
+  grade: { width: 280, height: 280, flexDirection: "row", flexWrap: "wrap", borderWidth: 1, borderRadius: 8, overflow: "hidden" },
+  celula: { width: "10%", height: "10%", borderWidth: 0.5 },
   controles: { marginTop: 16, alignItems: "center" },
   linhaControles: { flexDirection: "row", gap: 20 },
   botaoControle: { borderRadius: 8, borderWidth: 1, paddingHorizontal: 16, paddingVertical: 10, marginVertical: 4 },
   botaoReiniciar: { marginTop: 12, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 10 },
-  textoReiniciar: { color: "#FFF", fontWeight: "700" },
+  textoReiniciar: { fontWeight: "800" },
 });

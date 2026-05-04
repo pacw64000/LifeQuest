@@ -1,6 +1,7 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { useTemaVisual } from "../context/TemaVisualContext";
+import { raio } from "../constants/layout";
 
 export default function CartaoPadrao({ children }) {
   const { paleta } = useTemaVisual();
@@ -12,6 +13,7 @@ export default function CartaoPadrao({ children }) {
         {
           backgroundColor: paleta.fundoCartao,
           borderColor: paleta.bordaSuave,
+          shadowColor: paleta.destaque,
         },
       ]}
     >
@@ -22,9 +24,13 @@ export default function CartaoPadrao({ children }) {
 
 const styles = StyleSheet.create({
   cartao: {
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 12,
+    borderRadius: raio.cartao,
+    padding: 16,
+    marginBottom: 14,
     borderWidth: 1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 3,
   },
 });
