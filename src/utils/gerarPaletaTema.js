@@ -25,6 +25,13 @@ function hexParaRgb(hex) {
   return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
 }
 
+/** Hex (#RRGGBB) para string rgba — alpha em [0, 1]. */
+function hexParaRgba(hex, alpha) {
+  const { r, g, b } = hexParaRgb(hex);
+  const a = Math.max(0, Math.min(1, alpha));
+  return `rgba(${r},${g},${b},${a})`;
+}
+
 function rgbParaHex(r, g, b) {
   const to = (v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0");
   return `#${to(r)}${to(g)}${to(b)}`.toUpperCase();
@@ -55,11 +62,19 @@ function clarear(hex, fator = 0.2) {
   return rgbParaHex(r + (255 - r) * fator, g + (255 - g) * fator, b + (255 - b) * fator);
 }
 
+/** 0–1: valores altos = cor de texto clara (branco, cinza claro). */
+function luminanciaSimples(rgb) {
+  return (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
+}
+
 const OURO_DESTAQUE = "#F4C15A";
+
+/** Limiar acima do qual evitamos misturar texto com o azul do fundo (fica acinzentado/falso “escuro”). */
+const LIMIAR_TEXTO_CLARO = 0.52;
 
 /**
  * @param {string} corPrimariaHex
- * @param {{ corRodapeFim?: string|null }} [opcoes]
+ * @param {{ corRodapeFim?: string|null, corTexto?: string|null }} [opcoes]
  */
 export function gerarPaletaTema(corPrimariaHex, opcoes = {}) {
   const primaria = normalizarHex(corPrimariaHex);
@@ -76,6 +91,34 @@ export function gerarPaletaTema(corPrimariaHex, opcoes = {}) {
 
   const destaqueEscuro = escurecer(primaria, 0.18);
 
+  let textoPrincipal = "#E8EDF5";
+  let textoSecundario = "#94A0B8";
+  let textoSobreGradiente = "#F8FAFC";
+  let tabBarInactiveTint = "#6B7589";
+  let estrela = "#FFFFFF";
+
+  if (opcoes.corTexto && typeof opcoes.corTexto === "string") {
+    const base = normalizarHex(opcoes.corTexto);
+    const rgbBase = hexParaRgb(base);
+    const textoEhClaro = luminanciaSimples(rgbBase) > LIMIAR_TEXTO_CLARO;
+
+    textoPrincipal = base;
+
+    if (textoEhClaro) {
+      // Branco/cores claras: misturar com fundo azul escurecia tudo para um cinza-azulado.
+      // Escurecer só o RGB da própria cor mantém tons neutros e o branco legível.
+      textoSecundario = escurecer(base, 0.2);
+      textoSobreGradiente = luminanciaSimples(rgbBase) > 0.94 ? base : clarear(base, 0.05);
+      tabBarInactiveTint = escurecer(base, 0.3);
+      estrela = luminanciaSimples(rgbBase) > 0.94 ? base : clarear(base, 0.08);
+    } else {
+      textoSecundario = misturarHex(base, fundoPrimario, 0.4);
+      textoSobreGradiente = clarear(base, 0.06);
+      tabBarInactiveTint = misturarHex(base, fundoCartao, 0.55);
+      estrela = clarear(base, 0.12);
+    }
+  }
+
   return {
     corPrimaria: primaria,
     destaque: primaria,
@@ -84,18 +127,18 @@ export function gerarPaletaTema(corPrimariaHex, opcoes = {}) {
     fundoProfundo,
     fundoPrimario,
     fundoCartao,
-    textoPrincipal: "#E8EDF5",
-    textoSecundario: "#94A0B8",
+    textoPrincipal,
+    textoSecundario,
     bordaSuave: bordaSuave,
     sucesso: "#2EE6A8",
     alerta: "#E85D4C",
     headerGradient,
     footerGradient,
-    textoSobreGradiente: "#F8FAFC",
+    textoSobreGradiente,
     tabBarActiveTint: OURO_DESTAQUE,
-    tabBarInactiveTint: "#6B7589",
-    estrela: "#FFFFFF",
+    tabBarInactiveTint,
+    estrela,
   };
 }
 
-export { normalizarHex, COR_PRIMARIA_PADRAO };
+export { normalizarHex, COR_PRIMARIA_PADRAO, hexParaRgba };

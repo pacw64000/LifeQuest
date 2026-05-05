@@ -14,7 +14,10 @@ import {
  * @returns {{ paleta: object, tokens: object }}
  */
 export function derivarTemaVisual({ preferencias, fontesPixelCarregadas }) {
-  const paleta = gerarPaletaTema(preferencias.corPrimaria, { corRodapeFim: preferencias.corRodapeFim });
+  const paleta = gerarPaletaTema(preferencias.corPrimaria, {
+    corRodapeFim: preferencias.corRodapeFim,
+    corTexto: preferencias.corTexto,
+  });
   const fontePixelCarregada =
     preferencias.estetica === ESTETICA_PIXEL && fontesPixelCarregadas ? FONTE_PIXEL_FAMILY : null;
   const escalaFonte = normalizarEscalaFonte(preferencias.escalaFonte);

@@ -27,8 +27,25 @@ import {
   normalizarEscalaFonte,
   fonteEscalada,
 } from "../theme";
+import rotas from "../constants/rotas";
 
 const PRESETS = ["#26D0CE", "#F4C15A", "#6C5CE7", "#0984E3", "#00B894", "#E17055", "#A29BFE", "#D63031"];
+
+/** Cores de texto usadas na interface (titulos, rotulos, campos, abas inativas derivadas). */
+const PRESETS_TEXTO = [
+  "#E8EDF5",
+  "#F8FAFC",
+  "#FFFFFF",
+  "#CBD5E1",
+  "#FDE68A",
+  "#FECDD3",
+  "#A7F3D0",
+  "#BAE6FD",
+];
+
+const TRANSPARENCIA_BARRA_MIN = 0;
+const TRANSPARENCIA_BARRA_MAX = 1;
+const TRANSPARENCIA_BARRA_PASSO = 0.05;
 
 function criarEstilos(tokens) {
   const { espacamento: e, tipografia: tip, raio: r } = tokens;
@@ -89,14 +106,21 @@ export default function TelaConfiguracoesAparencia({ navigation }) {
   const styles = useMemo(() => criarEstilos(tokens), [tokens]);
   const fontCampo = tokens.fontFamilyTexto ? { fontFamily: tokens.fontFamilyTexto } : null;
   const escalaFonteAtual = normalizarEscalaFonte(preferencias.escalaFonte);
+  const transparenciaBarraRaw = preferencias.transparenciaBarraNavegacao;
+  const transparenciaBarra =
+    typeof transparenciaBarraRaw === "number" && Number.isFinite(transparenciaBarraRaw)
+      ? Math.max(TRANSPARENCIA_BARRA_MIN, Math.min(TRANSPARENCIA_BARRA_MAX, transparenciaBarraRaw))
+      : 1;
   const [hexTexto, setHexTexto] = useState(preferencias.corPrimaria);
+  const [hexCorTexto, setHexCorTexto] = useState(preferencias.corTexto || "");
   const [hexRodapeFim, setHexRodapeFim] = useState(preferencias.corRodapeFim || "");
   const [carregandoImagem, setCarregandoImagem] = useState(false);
 
   useEffect(() => {
     setHexTexto(preferencias.corPrimaria);
+    setHexCorTexto(preferencias.corTexto || "");
     setHexRodapeFim(preferencias.corRodapeFim || "");
-  }, [preferencias.corPrimaria, preferencias.corRodapeFim]);
+  }, [preferencias.corPrimaria, preferencias.corRodapeFim, preferencias.corTexto]);
 
   async function escolherImagemRodape() {
     const permissao = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -131,6 +155,21 @@ export default function TelaConfiguracoesAparencia({ navigation }) {
       return;
     }
     await salvarPreferencias({ corPrimaria: cor });
+  }
+
+  async function aplicarCorTextoInterface() {
+    const t = hexCorTexto.trim();
+    if (!t) {
+      await salvarPreferencias({ corTexto: null });
+      return;
+    }
+    try {
+      const cor = normalizarHex(t);
+      if (cor.length !== 7) throw new Error();
+      await salvarPreferencias({ corTexto: cor });
+    } catch {
+      Alert.alert("Cor invalida", "Use um hex como #E8EDF5 ou deixe vazio para o padrao do tema.");
+    }
   }
 
   async function aplicarCorRodapeFim() {
@@ -218,6 +257,52 @@ export default function TelaConfiguracoesAparencia({ navigation }) {
         </TouchableOpacity>
       </View>
 
+      <TextoApp style={[styles.secao, { color: paleta.textoPrincipal }]}>Barra inferior</TextoApp>
+      <TextoApp style={[styles.label, { color: paleta.textoSecundario }]}>
+        Transparencia da faixa das abas sobre o rodape (100% = ver o fundo; 0% = faixa opaca)
+      </TextoApp>
+      <View style={styles.linhaEscalaFonte}>
+        <TouchableOpacity
+          style={[
+            styles.botaoEscala,
+            { borderColor: paleta.bordaSuave, backgroundColor: paleta.fundoCartao },
+            transparenciaBarra <= TRANSPARENCIA_BARRA_MIN && styles.botaoEscalaDesabilitado,
+          ]}
+          onPress={() =>
+            salvarPreferencias({
+              transparenciaBarraNavegacao: Math.max(
+                TRANSPARENCIA_BARRA_MIN,
+                transparenciaBarra - TRANSPARENCIA_BARRA_PASSO
+              ),
+            })
+          }
+          disabled={transparenciaBarra <= TRANSPARENCIA_BARRA_MIN}
+        >
+          <Ionicons name="remove" size={22} color={paleta.textoPrincipal} />
+        </TouchableOpacity>
+        <TextoApp style={[styles.valorEscala, { color: paleta.textoPrincipal }]}>
+          {Math.round(transparenciaBarra * 100)}%
+        </TextoApp>
+        <TouchableOpacity
+          style={[
+            styles.botaoEscala,
+            { borderColor: paleta.bordaSuave, backgroundColor: paleta.fundoCartao },
+            transparenciaBarra >= TRANSPARENCIA_BARRA_MAX && styles.botaoEscalaDesabilitado,
+          ]}
+          onPress={() =>
+            salvarPreferencias({
+              transparenciaBarraNavegacao: Math.min(
+                TRANSPARENCIA_BARRA_MAX,
+                transparenciaBarra + TRANSPARENCIA_BARRA_PASSO
+              ),
+            })
+          }
+          disabled={transparenciaBarra >= TRANSPARENCIA_BARRA_MAX}
+        >
+          <Ionicons name="add" size={22} color={paleta.textoPrincipal} />
+        </TouchableOpacity>
+      </View>
+
       <TextoApp style={[styles.secao, { color: paleta.textoPrincipal }]}>Tamanho do texto</TextoApp>
       <TextoApp style={[styles.label, { color: paleta.textoSecundario }]}>
         Ajuste para leitura (afeta textos e campos)
@@ -298,6 +383,61 @@ export default function TelaConfiguracoesAparencia({ navigation }) {
         <BotaoPrimario tituloBotao="Aplicar" onPress={aplicarCorPrimaria} />
       </View>
 
+      <TextoApp style={[styles.secao, { color: paleta.textoPrincipal }]}>Cor do texto</TextoApp>
+      <TextoApp style={[styles.label, { color: paleta.textoSecundario }]}>
+        Titulos, descricoes, campos e texto secundario derivado. Deixe vazio para o padrao do tema.
+      </TextoApp>
+      <View style={styles.presetRow}>
+        {PRESETS_TEXTO.map((cor) => (
+          <TouchableOpacity
+            key={cor}
+            style={[
+              styles.swatch,
+              {
+                backgroundColor: cor,
+                borderWidth: 1,
+                borderColor: paleta.bordaSuave,
+              },
+              preferencias.corTexto === cor && { borderColor: paleta.destaqueSecundario, borderWidth: 3 },
+            ]}
+            onPress={() => {
+              setHexCorTexto(cor);
+              salvarPreferencias({ corTexto: cor });
+            }}
+          />
+        ))}
+      </View>
+
+      <TextoApp style={[styles.label, { color: paleta.textoSecundario }]}>Hex da cor de texto</TextoApp>
+      <View style={styles.linhaHex}>
+        <TextInput
+          style={[
+            styles.inputHex,
+            {
+              borderColor: paleta.bordaSuave,
+              color: paleta.textoPrincipal,
+              backgroundColor: paleta.fundoCartao,
+              fontSize: fonteEscalada(tokens.tipografia.corpo, tokens.escalaFonte),
+            },
+            fontCampo,
+          ]}
+          value={hexCorTexto}
+          onChangeText={setHexCorTexto}
+          autoCapitalize="characters"
+          placeholder="Vazio = automatico"
+          placeholderTextColor={paleta.textoSecundario}
+        />
+        <BotaoPrimario tituloBotao="Aplicar" onPress={aplicarCorTextoInterface} />
+      </View>
+      <BotaoPrimario
+        tituloBotao="Restaurar texto padrao do tema"
+        variante="secundario"
+        onPress={() => {
+          setHexCorTexto("");
+          salvarPreferencias({ corTexto: null });
+        }}
+      />
+
       <TextoApp style={[styles.secao, { color: paleta.textoPrincipal }]}>Rodape</TextoApp>
       <View style={styles.modoRow}>
         <TouchableOpacity
@@ -355,7 +495,14 @@ export default function TelaConfiguracoesAparencia({ navigation }) {
           {carregandoImagem ? (
             <ActivityIndicator color={paleta.destaque} />
           ) : (
-            <BotaoPrimario tituloBotao="Escolher imagem do rodape" onPress={escolherImagemRodape} />
+            <>
+              <BotaoPrimario tituloBotao="Escolher imagem do rodape" onPress={escolherImagemRodape} />
+              <BotaoPrimario
+                tituloBotao="Desenhar imagem do rodape"
+                variante="secundario"
+                onPress={() => navigation.navigate(rotas.desenhoRodape)}
+              />
+            </>
           )}
           {preferencias.uriImagemRodape ? (
             <BotaoPrimario

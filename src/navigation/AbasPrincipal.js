@@ -21,6 +21,7 @@ import TelaJogoTermo from "../screens/games/TelaJogoTermo";
 import TelaJogoSequencia from "../screens/games/TelaJogoSequencia";
 import rotas from "../constants/rotas";
 import { useTemaVisual } from "../context/TemaVisualContext";
+import { hexParaRgba } from "../utils/gerarPaletaTema";
 import TabBarComCapa from "./TabBarComCapa";
 
 const Tabs = createBottomTabNavigator();
@@ -53,7 +54,11 @@ function PilhaMiniGames() {
 }
 
 export default function AbasPrincipal() {
-  const { paleta, insetsChrome, tokens } = useTemaVisual();
+  const { paleta, insetsChrome, tokens, preferencias } = useTemaVisual();
+  const rawT = preferencias.transparenciaBarraNavegacao;
+  const transparencia =
+    typeof rawT === "number" && Number.isFinite(rawT) ? Math.max(0, Math.min(1, rawT)) : 1;
+  const opacidadeFundoBarra = 1 - transparencia;
   const tabFs = Math.max(
     10,
     Math.round(tokens.tipografia.tabBarLabel * tokens.escalaFonte)
@@ -81,6 +86,21 @@ export default function AbasPrincipal() {
         screenOptions={({ route }) => ({
           headerShown: false,
           sceneContainerStyle: { backgroundColor: "transparent" },
+          // BottomTabBar uses theme `colors.card` unless `tabBarBackground` is set; overlay alpha = 1 - transparencia.
+          tabBarBackground: () => (
+            <View
+              style={[
+                StyleSheet.absoluteFillObject,
+                { backgroundColor: hexParaRgba(paleta.fundoCartao, opacidadeFundoBarra) },
+              ]}
+            />
+          ),
+          tabBarStyle: {
+            backgroundColor: "transparent",
+            borderTopWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+          },
           tabBarActiveTintColor: paleta.tabBarActiveTint,
           tabBarInactiveTintColor: paleta.tabBarInactiveTint,
           tabBarShowLabel: true,

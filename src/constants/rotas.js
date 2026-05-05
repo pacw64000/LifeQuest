@@ -5,6 +5,7 @@ const rotas = {
   dashboard: "Dashboard",
   perfil: "Perfil",
   configuracoesAparencia: "ConfiguracoesAparencia",
+  desenhoRodape: "DesenhoRodape",
   missoes: "Missoes",
   criarMissao: "CriarMissao",
   miniGames: "MiniGames",

@@ -22,6 +22,10 @@ const preferenciasPadrao = {
   uriImagemRodape: null,
   estetica: ESTETICA_COSMICO,
   escalaFonte: ESCALA_FONTE_PADRAO,
+  /** 0 = faixa das abas opaca; 1 = totalmente transparente (ver rodape por tras) */
+  transparenciaBarraNavegacao: 1,
+  /** null = cores de texto padrao do tema; hex = cor base para textos da interface */
+  corTexto: null,
 };
 
 function mesclarPreferencias(base, parcial) {
@@ -39,6 +43,23 @@ function mesclarPreferencias(base, parcial) {
     estetica: est,
     escalaFonte:
       parcial.escalaFonte !== undefined ? normalizarEscalaFonte(parcial.escalaFonte) : normalizarEscalaFonte(base.escalaFonte),
+    transparenciaBarraNavegacao: (() => {
+      if (parcial.transparenciaBarraNavegacao !== undefined) {
+        const v = Number(parcial.transparenciaBarraNavegacao);
+        return Number.isFinite(v) ? Math.max(0, Math.min(1, v)) : base.transparenciaBarraNavegacao;
+      }
+      if (parcial.barraNavegacaoTransparente !== undefined) {
+        return parcial.barraNavegacaoTransparente ? 1 : 0;
+      }
+      const b = base.transparenciaBarraNavegacao;
+      return b !== undefined && Number.isFinite(Number(b)) ? Math.max(0, Math.min(1, Number(b))) : 1;
+    })(),
+    corTexto:
+      parcial.corTexto === undefined
+        ? base.corTexto
+        : parcial.corTexto === null || parcial.corTexto === ""
+          ? null
+          : normalizarHex(parcial.corTexto),
   };
 }
 
