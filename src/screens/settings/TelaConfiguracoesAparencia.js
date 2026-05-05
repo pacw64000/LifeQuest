@@ -16,7 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTemaVisual } from "../context/TemaVisualContext";
 import BotaoPrimario from "../components/BotaoPrimario";
 import { normalizarHex } from "../utils/gerarPaletaTema";
-import { copiarImagemRodapeParaDocumentos } from "../services/aparencia/copiarImagemRodapeLocal";
+import { copiarImagemRodapeParaDocumentos } from "../services/copiarImagemRodapeLocal";
 import { espacamento, raio, tipografia } from "../constants/layout";
 
 const PRESETS = ["#26D0CE", "#F4C15A", "#6C5CE7", "#0984E3", "#00B894", "#E17055", "#A29BFE", "#D63031"];

@@ -1,6 +1,4 @@
 const rotas = {
-  login: "Login",
-  cadastro: "Cadastro",
   abasPrincipal: "AbasPrincipal",
   dashboard: "Dashboard",
   perfil: "Perfil",

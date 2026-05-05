@@ -1,21 +1,21 @@
-/** Espacamento e tipografia compartilhados (complementam a paleta dinamica). */
+/** Espacamento, tipografia e raios compartilhados – estilo pixel retro do PDF. */
 export const espacamento = {
-  xs: 6,
-  sm: 10,
-  md: 16,
-  lg: 22,
-  xl: 28,
+  xs: 4,
+  sm: 8,
+  md: 14,
+  lg: 20,
+  xl: 26,
 };
 
 export const raio = {
-  cartao: 14,
-  botao: 12,
-  pill: 999,
+  cartao: 6,   // pixel look: raio pequeno
+  botao: 4,
+  pill: 4,     // tags quadradas/pixel
 };
 
 export const tipografia = {
-  tituloHero: 26,
-  tituloSecao: 20,
-  corpo: 15,
-  legenda: 13,
+  tituloHero:  22,
+  tituloSecao: 17,
+  corpo:       14,
+  legenda:     12,
 };
