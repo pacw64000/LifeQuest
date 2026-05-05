@@ -10,8 +10,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { autenticacaoFirebase } from "../services/config";
-import { obterOuCriarPerfilUsuario } from "../services/repositorioPerfil";
+import { autenticacaoFirebase } from "../services/firebase/config";
+import { obterOuCriarPerfilUsuario } from "../services/firebase/repositorioPerfil";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -32,7 +32,12 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const desinscrever = onAuthStateChanged(autenticacaoFirebase, async (usuarioFirebase) => {
       if (!usuarioFirebase) {
-        await loginComoConvidado();
+        if (modoConvidado) {
+          setCarregandoAutenticacao(false);
+          return;
+        }
+        setUsuarioAutenticado(null);
+        await AsyncStorage.removeItem(chaveStorageUsuario);
         setCarregandoAutenticacao(false);
         return;
       }

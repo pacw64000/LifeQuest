@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useTemaVisual } from "../context/TemaVisualContext";
-import { raio, tipografia } from "../constants/layout";
 
 export default function BotaoPrimario({ tituloBotao, onPress, desabilitado = false, variante = "primario" }) {
   const { paleta } = useTemaVisual();
@@ -13,7 +13,7 @@ export default function BotaoPrimario({ tituloBotao, onPress, desabilitado = fal
         style={[styles.botaoBorda, { borderColor: paleta.destaque }, desabilitado && styles.botaoDesabilitado]}
         onPress={onPress}
         disabled={desabilitado}
-        activeOpacity={0.8}
+        activeOpacity={0.85}
       >
         <Text style={[styles.textoBorda, { color: paleta.destaque }]}>{tituloBotao}</Text>
       </TouchableOpacity>
@@ -21,44 +21,50 @@ export default function BotaoPrimario({ tituloBotao, onPress, desabilitado = fal
   }
 
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      disabled={desabilitado}
-      activeOpacity={0.85}
-      style={[styles.botao, { backgroundColor: paleta.destaque }, desabilitado && styles.botaoDesabilitado]}
-    >
-      <Text style={styles.textoBotao}>{tituloBotao}</Text>
+    <TouchableOpacity onPress={onPress} disabled={desabilitado} activeOpacity={0.9} style={[styles.wrap, desabilitado && styles.botaoDesabilitado]}>
+      <LinearGradient
+        colors={[paleta.destaque, paleta.destaqueEscuro]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.gradiente}
+      >
+        <Text style={styles.textoBotao}>{tituloBotao}</Text>
+      </LinearGradient>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  botao: {
-    borderRadius: raio.botao,
+  wrap: {
+    borderRadius: 12,
+    overflow: "hidden",
+    marginVertical: 6,
+  },
+  gradiente: {
     paddingVertical: 13,
-    marginVertical: 5,
+    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 2,
-    borderColor: "transparent",
   },
   botaoBorda: {
-    borderRadius: raio.botao,
+    borderRadius: 12,
     borderWidth: 2,
     paddingVertical: 12,
     alignItems: "center",
-    marginVertical: 5,
+    marginVertical: 6,
     backgroundColor: "transparent",
   },
-  botaoDesabilitado: { opacity: 0.45 },
-  textoBotao: {
-    color: "#FFFFFF",
-    fontWeight: "900",
-    fontSize: tipografia.corpo,
-    letterSpacing: 0.5,
-  },
   textoBorda: {
+    fontWeight: "700",
+    fontSize: 15,
+  },
+  botaoDesabilitado: {
+    opacity: 0.5,
+  },
+  textoBotao: {
+    color: "#0A1628",
     fontWeight: "800",
-    fontSize: tipografia.corpo,
+    fontSize: 15,
+    letterSpacing: 0.3,
   },
 });

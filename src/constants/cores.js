@@ -1,14 +1,14 @@
-/** Fallback estático (splash / fora do tema dinâmico). Alinhado ao visual do PDF LifeQuest. */
+/** Fallback estatico (splash / fora do tema dinamico). Alinhado ao tema escuro LifeQuest. */
 const coresTema = {
-  fundoPrimario:   "#E8DFC8",
-  fundoCartao:     "#F5F0E5",
-  textoPrincipal:  "#1A0A04",
-  textoSecundario: "#5C4A35",
-  destaque:        "#4A7BC4",
-  destaqueEscuro:  "#3A5F9A",
-  sucesso:         "#3DAA6E",
-  alerta:          "#CC3B2F",
-  bordaSuave:      "#C8B89A",
+  fundoPrimario: "#0C1228",
+  fundoCartao: "#141C33",
+  textoPrincipal: "#E8EDF5",
+  textoSecundario: "#94A0B8",
+  destaque: "#26D0CE",
+  destaqueEscuro: "#1BA8A6",
+  sucesso: "#2EE6A8",
+  alerta: "#E85D4C",
+  bordaSuave: "#2A3550",
 };
 
 export default coresTema;

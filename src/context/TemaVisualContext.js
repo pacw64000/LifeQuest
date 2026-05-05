@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "./AuthContext";
 import { gerarPaletaTema, COR_PRIMARIA_PADRAO, normalizarHex } from "../utils/gerarPaletaTema";
-import { atualizarPerfilUsuario, obterOuCriarPerfilUsuario } from "../services/repositorioPerfil";
+import { atualizarPerfilUsuario, obterOuCriarPerfilUsuario } from "../services/firebase/repositorioPerfil";
 
 const chaveTemaConvidado = "@lifequest/tema/guest";
 

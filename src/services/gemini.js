@@ -1,8 +1,17 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // 1. Configuração inicial
-const API_KEY = "AIzaSyAgmEkvuCjtLlBKWKnXnysk6xLCuTMkYts";
-const ai = new GoogleGenAI({apiKey: API_KEY});
+const API_KEY = "AIzaSyB300lNaFLR6hgZ1JroonA0aBTkMqKXaL8";
+
+const genAI = new GoogleGenerativeAI(API_KEY);
+
+// 2. Definição do Modelo com Schema JSON forçado
+const model = genAI.getGenerativeModel({
+  model: "gemini-2.5-flash",
+  generationConfig: {
+    responseMimeType: "application/json",
+  },
+});
 
 /**
  * Função para buscar missões personalizadas
@@ -14,7 +23,7 @@ export const fetchMissionsFromGemini = async (theme, dificuldade) => {
     ${dificuldade ? " Com a dificuldade " + dificuldade: ""}
     As missões devem ser realistas e motivadoras.
     
-    Retorne os dados EXATAMENTE e unicamente neste formato JSON sem nenhum caracter extra:
+    Retorne os dados EXATAMENTE neste formato JSON:
     
     {
       "tituloMissao": "string",
@@ -25,9 +34,9 @@ export const fetchMissionsFromGemini = async (theme, dificuldade) => {
   `;
   
   try {
-    const response = await ai.models.generateContent({model: "gemma-4-31b-it", contents: prompt});
-    
-    const text = response.text;
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
     
     return JSON.parse(text);
   } catch (error) {

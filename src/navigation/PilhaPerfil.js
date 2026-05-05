@@ -1,7 +1,7 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import TelaPerfil from "../screens/main/TelaPerfil";
-import TelaConfiguracoesAparencia from "../screens/settings/TelaConfiguracoesAparencia";
+import TelaPerfil from "../screens/TelaPerfil";
+import TelaConfiguracoesAparencia from "../screens/TelaConfiguracoesAparencia";
 import rotas from "../constants/rotas";
 
 const Stack = createNativeStackNavigator();
