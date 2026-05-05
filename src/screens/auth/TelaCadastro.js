@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, StyleSheet, TextInput, View } from "react-native";
 import BotaoPrimario from "../../components/BotaoPrimario";
 import FundoGradienteDecorativo from "../../components/FundoGradienteDecorativo";
+import TextoApp from "../../components/TextoApp";
 import { useAuth } from "../../context/AuthContext";
 import { useTemaVisual } from "../../context/TemaVisualContext";
+import { fonteEscalada } from "../../theme";
 
 function TelaCadastro({ navigation }) {
   const { cadastrarComEmailSenha } = useAuth();
-  const { paleta } = useTemaVisual();
+  const { paleta, tokens } = useTemaVisual();
+  const fontCampo = tokens.fontFamilyTexto ? { fontFamily: tokens.fontFamilyTexto } : null;
   const [nomeUsuario, setNomeUsuario] = useState("");
   const [emailUsuario, setEmailUsuario] = useState("");
   const [senhaUsuario, setSenhaUsuario] = useState("");
@@ -28,12 +31,14 @@ function TelaCadastro({ navigation }) {
       borderColor: paleta.bordaSuave,
       backgroundColor: paleta.fundoCartao,
       color: paleta.textoPrincipal,
+      fontSize: fonteEscalada(16, tokens.escalaFonte),
     },
+    fontCampo,
   ];
 
   return (
     <FundoGradienteDecorativo style={styles.container}>
-      <Text style={[styles.titulo, { color: paleta.textoPrincipal }]}>Criar Conta</Text>
+      <TextoApp style={[styles.titulo, { color: paleta.textoPrincipal }]}>Criar Conta</TextoApp>
       <TextInput
         placeholder="Nome de usuario"
         placeholderTextColor={paleta.textoSecundario}

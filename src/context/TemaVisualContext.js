@@ -2,8 +2,10 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "./AuthContext";
-import { gerarPaletaTema, COR_PRIMARIA_PADRAO, normalizarHex } from "../utils/gerarPaletaTema";
+import { COR_PRIMARIA_PADRAO, normalizarHex } from "../utils/gerarPaletaTema";
 import { atualizarPerfilUsuario, obterOuCriarPerfilUsuario } from "../services/firebase/repositorioPerfil";
+import { ESTETICA_COSMICO, ESTETICA_PIXEL, ESCALA_FONTE_PADRAO, normalizarEscalaFonte } from "../constants/layout";
+import { derivarTemaVisual } from "../theme/derivarTemaVisual";
 
 const chaveTemaConvidado = "@lifequest/tema/guest";
 
@@ -18,9 +20,15 @@ const preferenciasPadrao = {
   modoRodape: "gradiente",
   corRodapeFim: null,
   uriImagemRodape: null,
+  estetica: ESTETICA_COSMICO,
+  escalaFonte: ESCALA_FONTE_PADRAO,
 };
 
 function mesclarPreferencias(base, parcial) {
+  const est =
+    parcial.estetica === ESTETICA_PIXEL || parcial.estetica === ESTETICA_COSMICO
+      ? parcial.estetica
+      : base.estetica;
   return {
     ...base,
     ...parcial,
@@ -28,6 +36,9 @@ function mesclarPreferencias(base, parcial) {
     modoRodape: parcial.modoRodape === "imagem" || parcial.modoRodape === "gradiente" ? parcial.modoRodape : base.modoRodape,
     corRodapeFim: parcial.corRodapeFim === undefined ? base.corRodapeFim : parcial.corRodapeFim || null,
     uriImagemRodape: parcial.uriImagemRodape === undefined ? base.uriImagemRodape : parcial.uriImagemRodape || null,
+    estetica: est,
+    escalaFonte:
+      parcial.escalaFonte !== undefined ? normalizarEscalaFonte(parcial.escalaFonte) : normalizarEscalaFonte(base.escalaFonte),
   };
 }
 
@@ -36,7 +47,7 @@ export const ALTURA_FAIXA_HEADER = 52;
 /** Altura extra reservada para tab bar acima do home indicator. */
 export const ALTURA_TAB_BAR_BASE = 52;
 
-export function TemaVisualProvider({ children }) {
+export function TemaVisualProvider({ children, fontesPixelCarregadas = false }) {
   const { usuarioAutenticado } = useAuth();
   const insets = useSafeAreaInsets();
   const [preferencias, setPreferencias] = useState(preferenciasPadrao);
@@ -44,10 +55,11 @@ export function TemaVisualProvider({ children }) {
 
   const idChave = usuarioAutenticado?.isGuest ? chaveTemaConvidado : usuarioAutenticado?.idUsuario ? chaveTemaUsuario(usuarioAutenticado.idUsuario) : null;
 
-  const paleta = useMemo(
-    () => gerarPaletaTema(preferencias.corPrimaria, { corRodapeFim: preferencias.corRodapeFim }),
-    [preferencias.corPrimaria, preferencias.corRodapeFim]
+  const tema = useMemo(
+    () => derivarTemaVisual({ preferencias, fontesPixelCarregadas }),
+    [preferencias, fontesPixelCarregadas]
   );
+  const { paleta, tokens } = tema;
 
   const insetsChrome = useMemo(
     () => ({
@@ -134,11 +146,16 @@ export function TemaVisualProvider({ children }) {
     () => ({
       preferencias,
       paleta,
+      /** Snapshot modular: paleta + tokens (use isto para novos codigo) */
+      tema,
+      /** Tokens de layout/espacamento/tipografia derivados — sempre via tema atual */
+      tokens,
+      tokensVisuais: tokens,
       salvarPreferencias,
       carregandoTema,
       insetsChrome,
     }),
-    [preferencias, paleta, salvarPreferencias, carregandoTema, insetsChrome]
+    [preferencias, paleta, tema, tokens, salvarPreferencias, carregandoTema, insetsChrome]
   );
 
   return <TemaVisualContext.Provider value={valor}>{children}</TemaVisualContext.Provider>;

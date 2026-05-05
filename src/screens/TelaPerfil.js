@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Pressable } from "react-native";
+import React, { useMemo } from "react";
+import { View, StyleSheet, ScrollView, TouchableOpacity, Pressable } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
@@ -7,8 +7,9 @@ import { useDadosApp } from "../context/DadosAppContext";
 import { useTemaVisual } from "../context/TemaVisualContext";
 import BotaoPrimario from "../components/BotaoPrimario";
 import CartaoPadrao from "../components/CartaoPadrao";
+import TextoApp from "../components/TextoApp";
+import FaixasDeCores from "../components/FaixasDeCores";
 import rotas from "../constants/rotas";
-import { espacamento, raio, tipografia } from "../constants/layout";
 
 function iniciais(nome) {
   if (!nome || !nome.trim()) return "?";
@@ -17,10 +18,89 @@ function iniciais(nome) {
   return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
 }
 
+function criarEstilos(tokens) {
+  const { espacamento: e, tipografia: tip } = tokens;
+  return StyleSheet.create({
+    scroll: { flex: 1 },
+    heroWrap: {},
+    heroGradient: {
+      minHeight: 220,
+    },
+    heroConteudo: {
+      paddingVertical: e.xl,
+      paddingHorizontal: e.md,
+      alignItems: "center",
+    },
+    botaoEngrenagem: {
+      position: "absolute",
+      top: e.sm,
+      right: e.sm,
+      zIndex: 2,
+      padding: e.xs,
+    },
+    avatar: {
+      width: 88,
+      height: 88,
+      borderRadius: 44,
+      borderWidth: 3,
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: e.sm,
+    },
+    avatarTexto: {
+      fontSize: tip.tituloHero,
+      fontWeight: "800",
+    },
+    nome: {
+      fontSize: tip.tituloHero,
+      fontWeight: "800",
+      textAlign: "center",
+    },
+    email: {
+      fontSize: tip.legenda,
+      opacity: 0.9,
+      marginTop: 4,
+      textAlign: "center",
+    },
+    linhaStats: {
+      flexDirection: "row",
+      marginTop: e.lg,
+      gap: e.sm,
+      justifyContent: "center",
+    },
+    statPill: {
+      backgroundColor: "rgba(255,255,255,0.22)",
+      paddingVertical: e.sm,
+      paddingHorizontal: e.md,
+      alignItems: "center",
+      minWidth: 72,
+    },
+    statValor: { fontSize: tip.corpo, fontWeight: "800" },
+    statLabel: { fontSize: 11, marginTop: 2, opacity: 0.95 },
+    corpo: {
+      paddingHorizontal: e.md,
+      marginTop: e.md,
+    },
+    secaoTitulo: {
+      fontWeight: "700",
+      fontSize: tip.tituloSecao,
+      marginBottom: e.sm,
+    },
+    linhaLink: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: e.sm,
+      paddingVertical: e.sm,
+    },
+    linhaLinkTexto: { flex: 1, fontSize: tip.corpo, fontWeight: "600" },
+  });
+}
+
 export default function TelaPerfil({ navigation }) {
   const { usuarioAutenticado, logout } = useAuth();
   const { expAtual, streakAtual, progressoNivel } = useDadosApp();
-  const { paleta, insetsChrome } = useTemaVisual();
+  const { paleta, insetsChrome, tokens } = useTemaVisual();
+  const styles = useMemo(() => criarEstilos(tokens), [tokens]);
 
   const nome = usuarioAutenticado?.nomeUsuario || "Aventureiro";
   const email = usuarioAutenticado?.emailUsuario || "";
@@ -28,42 +108,58 @@ export default function TelaPerfil({ navigation }) {
   return (
     <ScrollView
       style={[styles.scroll, { backgroundColor: paleta.fundoPrimario }]}
-      contentContainerStyle={{ paddingBottom: insetsChrome.paddingBottomConteudo + espacamento.lg }}
+      contentContainerStyle={{ paddingBottom: insetsChrome.paddingBottomConteudo + tokens.espacamento.lg }}
       showsVerticalScrollIndicator={false}
     >
       <View style={[styles.heroWrap, { paddingTop: insetsChrome.paddingTopConteudo }]}>
-        <LinearGradient colors={paleta.headerGradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.heroGradient}>
-          <Pressable style={styles.botaoEngrenagem} onPress={() => navigation.navigate(rotas.configuracoesAparencia)} hitSlop={12}>
-            <Ionicons name="color-palette-outline" size={24} color={paleta.textoSobreGradiente} />
-          </Pressable>
-          <View style={[styles.avatar, { borderColor: paleta.destaqueSecundario, backgroundColor: paleta.fundoCartao }]}>
-            <Text style={[styles.avatarTexto, { color: paleta.destaqueSecundario }]}>{iniciais(nome)}</Text>
+        <View
+          style={[
+            styles.heroGradient,
+            {
+              marginHorizontal: tokens.espacamento.md,
+              borderRadius: tokens.raio.cartao,
+              overflow: "hidden",
+            },
+          ]}
+        >
+          {tokens.usarFaixasEmVezDeGradiente ? (
+            <FaixasDeCores cores={paleta.headerGradient} style={StyleSheet.absoluteFillObject} />
+          ) : (
+            <LinearGradient colors={paleta.headerGradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFillObject} />
+          )}
+          <View style={styles.heroConteudo}>
+            <Pressable style={styles.botaoEngrenagem} onPress={() => navigation.navigate(rotas.configuracoesAparencia)} hitSlop={12}>
+              <Ionicons name="color-palette-outline" size={24} color={paleta.textoSobreGradiente} />
+            </Pressable>
+            <View style={[styles.avatar, { borderColor: paleta.destaqueSecundario, backgroundColor: paleta.fundoCartao }]}>
+              <TextoApp style={[styles.avatarTexto, { color: paleta.destaqueSecundario }]}>{iniciais(nome)}</TextoApp>
+            </View>
+            <TextoApp style={[styles.nome, { color: paleta.textoSobreGradiente }]}>{nome}</TextoApp>
+            {email ? <TextoApp style={[styles.email, { color: paleta.textoSobreGradiente }]}>{email}</TextoApp> : null}
+            <View style={styles.linhaStats}>
+              <View style={[styles.statPill, { borderRadius: tokens.raio.pill }]}>
+                <TextoApp style={[styles.statValor, { color: paleta.textoSobreGradiente }]}>Nv.{progressoNivel.nivelAtual}</TextoApp>
+                <TextoApp style={[styles.statLabel, { color: paleta.textoSobreGradiente }]}>Nivel</TextoApp>
+              </View>
+              <View style={[styles.statPill, { borderRadius: tokens.raio.pill }]}>
+                <TextoApp style={[styles.statValor, { color: paleta.textoSobreGradiente }]}>{expAtual}</TextoApp>
+                <TextoApp style={[styles.statLabel, { color: paleta.textoSobreGradiente }]}>XP</TextoApp>
+              </View>
+              <View style={[styles.statPill, { borderRadius: tokens.raio.pill }]}>
+                <TextoApp style={[styles.statValor, { color: paleta.textoSobreGradiente }]}>{streakAtual}</TextoApp>
+                <TextoApp style={[styles.statLabel, { color: paleta.textoSobreGradiente }]}>Streak</TextoApp>
+              </View>
+            </View>
           </View>
-          <Text style={[styles.nome, { color: paleta.textoSobreGradiente }]}>{nome}</Text>
-          {email ? <Text style={[styles.email, { color: paleta.textoSobreGradiente }]}>{email}</Text> : null}
-          <View style={styles.linhaStats}>
-            <View style={styles.statPill}>
-              <Text style={[styles.statValor, { color: paleta.textoSobreGradiente }]}>Nv.{progressoNivel.nivelAtual}</Text>
-              <Text style={[styles.statLabel, { color: paleta.textoSobreGradiente }]}>Nivel</Text>
-            </View>
-            <View style={styles.statPill}>
-              <Text style={[styles.statValor, { color: paleta.textoSobreGradiente }]}>{expAtual}</Text>
-              <Text style={[styles.statLabel, { color: paleta.textoSobreGradiente }]}>XP</Text>
-            </View>
-            <View style={styles.statPill}>
-              <Text style={[styles.statValor, { color: paleta.textoSobreGradiente }]}>{streakAtual}</Text>
-              <Text style={[styles.statLabel, { color: paleta.textoSobreGradiente }]}>Streak</Text>
-            </View>
-          </View>
-        </LinearGradient>
+        </View>
       </View>
 
       <View style={styles.corpo}>
         <CartaoPadrao>
-          <Text style={[styles.secaoTitulo, { color: paleta.textoPrincipal }]}>Conta</Text>
+          <TextoApp style={[styles.secaoTitulo, { color: paleta.textoPrincipal }]}>Conta</TextoApp>
           <TouchableOpacity style={styles.linhaLink} onPress={() => navigation.navigate(rotas.configuracoesAparencia)}>
             <Ionicons name="brush-outline" size={22} color={paleta.textoSecundario} />
-            <Text style={[styles.linhaLinkTexto, { color: paleta.textoPrincipal }]}>Aparência e tema</Text>
+            <TextoApp style={[styles.linhaLinkTexto, { color: paleta.textoPrincipal }]}>Aparência e tema</TextoApp>
             <Ionicons name="chevron-forward" size={20} color={paleta.textoSecundario} />
           </TouchableOpacity>
         </CartaoPadrao>
@@ -73,79 +169,3 @@ export default function TelaPerfil({ navigation }) {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  scroll: { flex: 1 },
-  heroWrap: {},
-  heroGradient: {
-    marginHorizontal: espacamento.md,
-    borderRadius: raio.cartao,
-    paddingVertical: espacamento.xl,
-    paddingHorizontal: espacamento.md,
-    alignItems: "center",
-    minHeight: 220,
-  },
-  botaoEngrenagem: {
-    position: "absolute",
-    top: espacamento.sm,
-    right: espacamento.sm,
-    zIndex: 2,
-    padding: espacamento.xs,
-  },
-  avatar: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    borderWidth: 3,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: espacamento.sm,
-  },
-  avatarTexto: {
-    fontSize: tipografia.tituloHero,
-    fontWeight: "800",
-  },
-  nome: {
-    fontSize: tipografia.tituloHero,
-    fontWeight: "800",
-    textAlign: "center",
-  },
-  email: {
-    fontSize: tipografia.legenda,
-    opacity: 0.9,
-    marginTop: 4,
-    textAlign: "center",
-  },
-  linhaStats: {
-    flexDirection: "row",
-    marginTop: espacamento.lg,
-    gap: espacamento.sm,
-    justifyContent: "center",
-  },
-  statPill: {
-    backgroundColor: "rgba(255,255,255,0.22)",
-    paddingVertical: espacamento.sm,
-    paddingHorizontal: espacamento.md,
-    borderRadius: raio.pill,
-    alignItems: "center",
-    minWidth: 72,
-  },
-  statValor: { fontSize: tipografia.corpo, fontWeight: "800" },
-  statLabel: { fontSize: 11, marginTop: 2, opacity: 0.95 },
-  corpo: {
-    paddingHorizontal: espacamento.md,
-    marginTop: espacamento.md,
-  },
-  secaoTitulo: {
-    fontWeight: "700",
-    fontSize: tipografia.tituloSecao,
-    marginBottom: espacamento.sm,
-  },
-  linhaLink: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: espacamento.sm,
-    paddingVertical: espacamento.sm,
-  },
-  linhaLinkTexto: { flex: 1, fontSize: tipografia.corpo, fontWeight: "600" },
-});

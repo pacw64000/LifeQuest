@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useDadosApp } from "../../context/DadosAppContext";
 import { useTemaVisual } from "../../context/TemaVisualContext";
+import TextoApp from "../../components/TextoApp";
 
 const perguntasQuiz = [
   {
@@ -59,14 +60,14 @@ export default function TelaJogoQuiz() {
         },
       ]}
     >
-      <Text style={[styles.pergunta, { color: paleta.textoPrincipal }]}>{perguntaAtual.textoPergunta}</Text>
+      <TextoApp style={[styles.pergunta, { color: paleta.textoPrincipal }]}>{perguntaAtual.textoPergunta}</TextoApp>
       {perguntaAtual.opcoesResposta.map((respostaAtual, indiceResposta) => (
         <TouchableOpacity
           key={respostaAtual}
           style={[styles.botaoResposta, { borderColor: paleta.bordaSuave, backgroundColor: paleta.fundoCartao }]}
           onPress={() => responder(indiceResposta)}
         >
-          <Text style={[styles.textoResposta, { color: paleta.textoPrincipal }]}>{respostaAtual}</Text>
+          <TextoApp style={[styles.textoResposta, { color: paleta.textoPrincipal }]}>{respostaAtual}</TextoApp>
         </TouchableOpacity>
       ))}
     </View>

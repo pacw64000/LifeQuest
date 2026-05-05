@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useDadosApp } from "../../context/DadosAppContext";
 import { useTemaVisual } from "../../context/TemaVisualContext";
+import TextoApp from "../../components/TextoApp";
 
 function embaralharArray(listaOriginal) {
   return [...listaOriginal].sort(() => Math.random() - 0.5);
@@ -76,13 +77,13 @@ export default function TelaJogoMemoria() {
               style={[styles.carta, { backgroundColor: paleta.destaque }]}
               onPress={() => virarCarta(cartaAtual)}
             >
-              <Text style={styles.simbolo}>{cartaRevelada ? cartaAtual.simboloCarta : "?"}</Text>
+              <TextoApp style={styles.simbolo}>{cartaRevelada ? cartaAtual.simboloCarta : "?"}</TextoApp>
             </TouchableOpacity>
           );
         })}
       </View>
       <TouchableOpacity style={[styles.botaoReiniciar, { backgroundColor: paleta.textoPrincipal }]} onPress={reiniciar}>
-        <Text style={styles.textoReiniciar}>Reiniciar</Text>
+        <TextoApp style={styles.textoReiniciar}>Reiniciar</TextoApp>
       </TouchableOpacity>
     </View>
   );

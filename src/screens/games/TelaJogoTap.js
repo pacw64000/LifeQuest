@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import BotaoPrimario from "../../components/BotaoPrimario";
+import TextoApp from "../../components/TextoApp";
 import { useDadosApp } from "../../context/DadosAppContext";
 import { useTemaVisual } from "../../context/TemaVisualContext";
 
@@ -42,14 +43,14 @@ export default function TelaJogoTap() {
         },
       ]}
     >
-      <Text style={[styles.info, { color: paleta.textoPrincipal }]}>Tempo: {segundosRestantes}s</Text>
-      <Text style={[styles.info, { color: paleta.textoPrincipal }]}>Toques: {pontuacaoTap}</Text>
+      <TextoApp style={[styles.info, { color: paleta.textoPrincipal }]}>Tempo: {segundosRestantes}s</TextoApp>
+      <TextoApp style={[styles.info, { color: paleta.textoPrincipal }]}>Toques: {pontuacaoTap}</TextoApp>
       <TouchableOpacity
         style={[styles.areaTap, { backgroundColor: paleta.destaque }]}
         disabled={!jogoIniciado}
         onPress={() => setPontuacaoTap((valorAnterior) => valorAnterior + 1)}
       >
-        <Text style={styles.textoTap}>TAP</Text>
+        <TextoApp style={styles.textoTap}>TAP</TextoApp>
       </TouchableOpacity>
       <BotaoPrimario tituloBotao={jogoIniciado ? "Jogando..." : "Iniciar rodada"} onPress={iniciarRodada} desabilitado={jogoIniciado} />
     </View>

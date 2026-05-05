@@ -1,15 +1,15 @@
 import React from "react";
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useDadosApp } from "../context/DadosAppContext";
 import { useTemaVisual } from "../context/TemaVisualContext";
 import CartaoPadrao from "../components/CartaoPadrao";
 import BotaoPrimario from "../components/BotaoPrimario";
+import TextoApp from "../components/TextoApp";
 import rotas from "../constants/rotas";
-import { espacamento } from "../constants/layout";
 
 export default function TelaMissoes({ navigation }) {
   const { listaMissoes, concluirMissao, removerMissao } = useDadosApp();
-  const { paleta, insetsChrome } = useTemaVisual();
+  const { paleta, insetsChrome, tokens } = useTemaVisual();
 
   return (
     <View style={[styles.fundo, { backgroundColor: paleta.fundoPrimario }]}>
@@ -17,9 +17,9 @@ export default function TelaMissoes({ navigation }) {
         style={[
           styles.conteudo,
           {
-            paddingTop: insetsChrome.paddingTopConteudo + espacamento.sm,
+            paddingTop: insetsChrome.paddingTopConteudo + tokens.espacamento.sm,
             paddingBottom: insetsChrome.paddingBottomConteudo,
-            paddingHorizontal: espacamento.md,
+            paddingHorizontal: tokens.espacamento.md,
           },
         ]}
       >
@@ -29,25 +29,25 @@ export default function TelaMissoes({ navigation }) {
           data={listaMissoes}
           keyExtractor={(missao) => missao.idMissao}
           ListEmptyComponent={
-            <Text style={[styles.vazio, { color: paleta.textoSecundario }]}>Nenhuma missao criada ainda.</Text>
+            <TextoApp style={[styles.vazio, { color: paleta.textoSecundario }]}>Nenhuma missao criada ainda.</TextoApp>
           }
           renderItem={({ item }) => (
             <CartaoPadrao>
-              <Text style={[styles.tituloMissao, { color: paleta.textoPrincipal }]}>{item.tituloMissao}</Text>
-              <Text style={[styles.descricaoMissao, { color: paleta.textoSecundario }]}>{item.descricaoMissao}</Text>
-              <Text style={[styles.metaMissao, { color: paleta.textoSecundario }]}>Dificuldade: {item.dificuldadeMissao}</Text>
+              <TextoApp style={[styles.tituloMissao, { color: paleta.textoPrincipal }]}>{item.tituloMissao}</TextoApp>
+              <TextoApp style={[styles.descricaoMissao, { color: paleta.textoSecundario }]}>{item.descricaoMissao}</TextoApp>
+              <TextoApp style={[styles.metaMissao, { color: paleta.textoSecundario }]}>Dificuldade: {item.dificuldadeMissao}</TextoApp>
               <View style={styles.linhaAcoes}>
                 <TouchableOpacity
                   style={[styles.botaoAcao, { backgroundColor: paleta.sucesso }]}
                   onPress={() => concluirMissao(item.idMissao)}
                 >
-                  <Text style={styles.textoAcao}>{item.concluida ? "Concluida" : "Concluir"}</Text>
+                  <TextoApp style={styles.textoAcao}>{item.concluida ? "Concluida" : "Concluir"}</TextoApp>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.botaoAcao, { backgroundColor: paleta.alerta }]}
                   onPress={() => removerMissao(item.idMissao)}
                 >
-                  <Text style={styles.textoAcao}>Excluir</Text>
+                  <TextoApp style={styles.textoAcao}>Excluir</TextoApp>
                 </TouchableOpacity>
               </View>
             </CartaoPadrao>

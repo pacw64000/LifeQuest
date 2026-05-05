@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useDadosApp } from "../../context/DadosAppContext";
 import { useTemaVisual } from "../../context/TemaVisualContext";
+import TextoApp from "../../components/TextoApp";
 
 const gabaritoNonogram = [
   [1, 0, 0, 0, 1],
@@ -55,10 +56,10 @@ export default function TelaJogoNonogram() {
         },
       ]}
     >
-      <Text style={[styles.dicaTopo, { color: paleta.textoSecundario }]}>Dicas colunas: {dicasColuna.join(" | ")}</Text>
+      <TextoApp style={[styles.dicaTopo, { color: paleta.textoSecundario }]}>Dicas colunas: {dicasColuna.join(" | ")}</TextoApp>
       {gradeJogador.map((linhaAtual, indiceLinha) => (
         <View key={`linha-${indiceLinha}`} style={styles.linha}>
-          <Text style={[styles.dicaLinha, { color: paleta.textoSecundario }]}>{dicasLinha[indiceLinha]}</Text>
+          <TextoApp style={[styles.dicaLinha, { color: paleta.textoSecundario }]}>{dicasLinha[indiceLinha]}</TextoApp>
           {linhaAtual.map((valorCelula, indiceColuna) => (
             <TouchableOpacity
               key={`coluna-${indiceColuna}`}
@@ -73,7 +74,7 @@ export default function TelaJogoNonogram() {
         </View>
       ))}
       <TouchableOpacity style={[styles.botaoValidar, { backgroundColor: paleta.textoPrincipal }]} onPress={validarSolucao}>
-        <Text style={styles.textoValidar}>Validar puzzle</Text>
+        <TextoApp style={styles.textoValidar}>Validar puzzle</TextoApp>
       </TouchableOpacity>
     </View>
   );

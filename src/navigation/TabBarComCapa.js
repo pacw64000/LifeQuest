@@ -4,9 +4,10 @@ import { BottomTabBar } from "@react-navigation/bottom-tabs";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTemaVisual } from "../context/TemaVisualContext";
+import FaixasDeCores from "../components/FaixasDeCores";
 
 export default function TabBarComCapa(props) {
-  const { preferencias, paleta } = useTemaVisual();
+  const { preferencias, paleta, tokens } = useTemaVisual();
   const insets = useSafeAreaInsets();
   const usaImagem = preferencias.modoRodape === "imagem" && preferencias.uriImagemRodape;
 
@@ -22,20 +23,37 @@ export default function TabBarComCapa(props) {
 
   const conteudo = <BottomTabBar {...props} style={estiloTabBarTransparente} />;
 
+  const capaExterna = [
+    styles.capaBase,
+    {
+      borderTopLeftRadius: tokens.tabBarTopRadius,
+      borderTopRightRadius: tokens.tabBarTopRadius,
+      borderTopWidth: tokens.tabBarBorderTop,
+      borderTopColor: paleta.bordaSuave,
+    },
+  ];
+
+  const paddingRodape = { paddingBottom: Math.max(insets.bottom, 8) };
+
   return (
-    <View style={styles.bordaArredondada}>
+    <View style={capaExterna}>
       {usaImagem ? (
         <ImageBackground
           source={{ uri: preferencias.uriImagemRodape }}
-          style={[styles.fundo, { paddingBottom: Math.max(insets.bottom, 8) }]}
+          style={[styles.fundo, paddingRodape]}
           resizeMode="cover"
         >
           {conteudo}
         </ImageBackground>
+      ) : tokens.usarFaixasEmVezDeGradiente ? (
+        <View style={[styles.fundo, paddingRodape, styles.fundoFaixas]}>
+          <FaixasDeCores cores={paleta.footerGradient} style={StyleSheet.absoluteFillObject} />
+          {conteudo}
+        </View>
       ) : (
         <LinearGradient
           colors={paleta.footerGradient}
-          style={[styles.fundo, { paddingBottom: Math.max(insets.bottom, 8) }]}
+          style={[styles.fundo, paddingRodape]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
@@ -47,10 +65,11 @@ export default function TabBarComCapa(props) {
 }
 
 const styles = StyleSheet.create({
-  bordaArredondada: {
+  capaBase: {
     overflow: "hidden",
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
+  },
+  fundoFaixas: {
+    position: "relative",
   },
   fundo: {
     paddingTop: 6,

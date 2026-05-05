@@ -1,8 +1,8 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import rotas from "../constants/rotas";
 import { useTemaVisual } from "../context/TemaVisualContext";
-import { espacamento } from "../constants/layout";
+import TextoApp from "../components/TextoApp";
 
 const listaMiniGames = [
   { idGame: rotas.jogoMemoria, tituloGame: "Jogo da Memoria" },
@@ -13,18 +13,18 @@ const listaMiniGames = [
 ];
 
 export default function TelaMiniGames({ navigation }) {
-  const { paleta, insetsChrome } = useTemaVisual();
+  const { paleta, insetsChrome, tokens } = useTemaVisual();
 
   return (
     <ScrollView
       style={[styles.scroll, { backgroundColor: paleta.fundoPrimario }]}
       contentContainerStyle={{
-        paddingTop: insetsChrome.paddingTopConteudo + espacamento.sm,
-        paddingBottom: insetsChrome.paddingBottomConteudo + espacamento.lg,
-        paddingHorizontal: espacamento.md,
+        paddingTop: insetsChrome.paddingTopConteudo + tokens.espacamento.sm,
+        paddingBottom: insetsChrome.paddingBottomConteudo + tokens.espacamento.lg,
+        paddingHorizontal: tokens.espacamento.md,
       }}
     >
-      <Text style={[styles.descricao, { color: paleta.textoSecundario }]}>Conclua missoes e ganhe XP bonus com mini games.</Text>
+      <TextoApp style={[styles.descricao, { color: paleta.textoSecundario }]}>Conclua missoes e ganhe XP bonus com mini games.</TextoApp>
       {listaMiniGames.map((gameAtual) => (
         <TouchableOpacity
           key={gameAtual.idGame}
@@ -37,7 +37,7 @@ export default function TelaMiniGames({ navigation }) {
           ]}
           onPress={() => navigation.navigate(gameAtual.idGame)}
         >
-          <Text style={[styles.tituloGame, { color: paleta.textoPrincipal }]}>{gameAtual.tituloGame}</Text>
+          <TextoApp style={[styles.tituloGame, { color: paleta.textoPrincipal }]}>{gameAtual.tituloGame}</TextoApp>
         </TouchableOpacity>
       ))}
     </ScrollView>

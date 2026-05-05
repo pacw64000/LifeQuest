@@ -1,21 +1,21 @@
 import React from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { useDadosApp } from "../context/DadosAppContext";
 import { useTemaVisual } from "../context/TemaVisualContext";
 import CartaoPadrao from "../components/CartaoPadrao";
-import { espacamento } from "../constants/layout";
+import TextoApp from "../components/TextoApp";
 
 export default function TelaConquistas() {
   const { catalogoConquistasPadrao, listaConquistasDesbloqueadas } = useDadosApp();
-  const { paleta, insetsChrome } = useTemaVisual();
+  const { paleta, insetsChrome, tokens } = useTemaVisual();
 
   return (
     <View style={[styles.container, { backgroundColor: paleta.fundoPrimario }]}>
       <FlatList
         contentContainerStyle={{
-          paddingTop: insetsChrome.paddingTopConteudo + espacamento.sm,
-          paddingBottom: insetsChrome.paddingBottomConteudo + espacamento.lg,
-          paddingHorizontal: espacamento.md,
+          paddingTop: insetsChrome.paddingTopConteudo + tokens.espacamento.sm,
+          paddingBottom: insetsChrome.paddingBottomConteudo + tokens.espacamento.lg,
+          paddingHorizontal: tokens.espacamento.md,
         }}
         data={catalogoConquistasPadrao}
         keyExtractor={(conquista) => conquista.idConquista}
@@ -23,11 +23,11 @@ export default function TelaConquistas() {
           const desbloqueada = listaConquistasDesbloqueadas.includes(item.idConquista);
           return (
             <CartaoPadrao>
-              <Text style={[styles.titulo, { color: paleta.textoPrincipal }]}>{item.tituloConquista}</Text>
-              <Text style={[styles.descricao, { color: paleta.textoSecundario }]}>{item.descricaoConquista}</Text>
-              <Text style={[styles.status, desbloqueada ? { color: paleta.sucesso } : { color: paleta.alerta }]}>
+              <TextoApp style={[styles.titulo, { color: paleta.textoPrincipal }]}>{item.tituloConquista}</TextoApp>
+              <TextoApp style={[styles.descricao, { color: paleta.textoSecundario }]}>{item.descricaoConquista}</TextoApp>
+              <TextoApp style={[styles.status, desbloqueada ? { color: paleta.sucesso } : { color: paleta.alerta }]}>
                 {desbloqueada ? "Desbloqueada" : "Bloqueada"}
-              </Text>
+              </TextoApp>
             </CartaoPadrao>
           );
         }}

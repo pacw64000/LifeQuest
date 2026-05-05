@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, View } from "react-native";
 import { useTemaVisual } from "../context/TemaVisualContext";
+import FaixasDeCores from "./FaixasDeCores";
 
 /** Pontos fixos para evitar “piscar” entre renders. */
 const ESTRELAS = [
@@ -22,17 +23,65 @@ const ESTRELAS = [
   { t: "93%", l: "62%", o: 0.38, s: 1.5 },
 ];
 
+const PONTOS_GRADE = [
+  { t: "8%", l: "12%" },
+  { t: "8%", l: "38%" },
+  { t: "8%", l: "64%" },
+  { t: "8%", l: "88%" },
+  { t: "22%", l: "25%" },
+  { t: "22%", l: "55%" },
+  { t: "22%", l: "78%" },
+  { t: "38%", l: "15%" },
+  { t: "38%", l: "42%" },
+  { t: "38%", l: "70%" },
+  { t: "52%", l: "8%" },
+  { t: "52%", l: "48%" },
+  { t: "52%", l: "92%" },
+  { t: "68%", l: "22%" },
+  { t: "68%", l: "58%" },
+  { t: "68%", l: "82%" },
+  { t: "85%", l: "18%" },
+  { t: "85%", l: "45%" },
+  { t: "85%", l: "72%" },
+];
+
 /**
  * Fundo espacial (gradiente + nebulosa suave + estrelas), alinhado ao visual do design LifeQuest.
+ * Modo pixel: faixas solidas + pontos em grade.
  * pointerEvents="none" nas camadas decorativas para nao bloquear toques.
  */
 export default function FundoGradienteDecorativo({ children, style }) {
-  const { paleta } = useTemaVisual();
+  const { paleta, tokens } = useTemaVisual();
 
   const coresFundo = useMemo(
     () => [paleta.fundoProfundo || "#050814", paleta.fundoPrimario, paleta.fundoProfundo || "#050814"],
     [paleta.fundoPrimario, paleta.fundoProfundo]
   );
+
+  if (tokens.usarFaixasEmVezDeGradiente) {
+    return (
+      <View style={[styles.raiz, style]}>
+        <FaixasDeCores cores={coresFundo} style={StyleSheet.absoluteFillObject} />
+        <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
+          {PONTOS_GRADE.map((p, i) => (
+            <View
+              key={i}
+              style={[
+                styles.pontoGrade,
+                {
+                  top: p.t,
+                  left: p.l,
+                  backgroundColor: paleta.destaque,
+                  opacity: 0.35,
+                },
+              ]}
+            />
+          ))}
+        </View>
+        {children}
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.raiz, style]}>
@@ -85,5 +134,10 @@ const styles = StyleSheet.create({
   },
   estrela: {
     position: "absolute",
+  },
+  pontoGrade: {
+    position: "absolute",
+    width: 3,
+    height: 3,
   },
 });

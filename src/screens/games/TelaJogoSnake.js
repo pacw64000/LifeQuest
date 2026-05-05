@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useDadosApp } from "../../context/DadosAppContext";
 import { useTemaVisual } from "../../context/TemaVisualContext";
+import TextoApp from "../../components/TextoApp";
 
 const tamanhoGrade = 10;
 const direcoes = {
@@ -76,7 +77,7 @@ export default function TelaJogoSnake() {
         },
       ]}
     >
-      <Text style={[styles.pontuacao, { color: paleta.textoPrincipal }]}>Pontuacao: {pontuacaoSnake}</Text>
+      <TextoApp style={[styles.pontuacao, { color: paleta.textoPrincipal }]}>Pontuacao: {pontuacaoSnake}</TextoApp>
       <View style={[styles.grade, { borderColor: paleta.bordaSuave, backgroundColor: paleta.fundoProfundo || paleta.fundoCartao }]}>
         {Array.from({ length: tamanhoGrade * tamanhoGrade }).map((_, indiceCelula) => {
           const x = indiceCelula % tamanhoGrade;
@@ -101,32 +102,32 @@ export default function TelaJogoSnake() {
           style={[styles.botaoControle, { borderColor: paleta.bordaSuave, backgroundColor: paleta.fundoCartao }]}
           onPress={() => setDirecaoAtual(direcoes.cima)}
         >
-          <Text>↑</Text>
+          <TextoApp>↑</TextoApp>
         </TouchableOpacity>
         <View style={styles.linhaControles}>
           <TouchableOpacity
             style={[styles.botaoControle, { borderColor: paleta.bordaSuave, backgroundColor: paleta.fundoCartao }]}
             onPress={() => setDirecaoAtual(direcoes.esquerda)}
           >
-            <Text>←</Text>
+            <TextoApp>←</TextoApp>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.botaoControle, { borderColor: paleta.bordaSuave, backgroundColor: paleta.fundoCartao }]}
             onPress={() => setDirecaoAtual(direcoes.direita)}
           >
-            <Text>→</Text>
+            <TextoApp>→</TextoApp>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
           style={[styles.botaoControle, { borderColor: paleta.bordaSuave, backgroundColor: paleta.fundoCartao }]}
           onPress={() => setDirecaoAtual(direcoes.baixo)}
         >
-          <Text>↓</Text>
+          <TextoApp>↓</TextoApp>
         </TouchableOpacity>
       </View>
       {!jogoAtivo && (
         <TouchableOpacity style={[styles.botaoReiniciar, { backgroundColor: paleta.destaque }]} onPress={reiniciarSnake}>
-          <Text style={[styles.textoReiniciar, { color: "#0A1628" }]}>Jogar novamente</Text>
+          <TextoApp style={[styles.textoReiniciar, { color: "#0A1628" }]}>Jogar novamente</TextoApp>
         </TouchableOpacity>
       )}
     </View>

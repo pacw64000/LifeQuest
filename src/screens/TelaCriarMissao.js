@@ -1,15 +1,18 @@
 import React, { useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import BotaoPrimario from "../components/BotaoPrimario";
+import TextoApp from "../components/TextoApp";
 import { useDadosApp } from "../context/DadosAppContext";
 import { useTemaVisual } from "../context/TemaVisualContext";
 import { agendarLembreteMissao } from "../services/notificacoes/servicoNotificacoes";
-import { espacamento } from "../constants/layout";
+import { fonteEscalada } from "../theme";
 import { fetchMissionsFromGemini } from "../services/gemini.js"
 
 export default function TelaCriarMissao({ navigation }) {
   const { criarMissao } = useDadosApp();
-  const { paleta, insetsChrome } = useTemaVisual();
+  const { paleta, insetsChrome, tokens } = useTemaVisual();
+  const fsInput = fonteEscalada(16, tokens.escalaFonte);
+  const fontCampo = tokens.fontFamilyTexto ? { fontFamily: tokens.fontFamilyTexto } : null;
   const [tituloMissao, setTituloMissao] = useState("");
   const [descricaoMissao, setDescricaoMissao] = useState("");
   const [dificuldadeMissao, setDificuldadeMissao] = useState("facil");
@@ -53,21 +56,29 @@ export default function TelaCriarMissao({ navigation }) {
       borderColor: paleta.bordaSuave,
       backgroundColor: paleta.fundoCartao,
       color: paleta.textoPrincipal,
+      fontSize: fsInput,
     },
+    fontCampo,
   ];
 
   return (
     <ScrollView
       style={[styles.scroll, { backgroundColor: paleta.fundoPrimario }]}
       contentContainerStyle={{
-        paddingTop: insetsChrome.paddingTopConteudo + espacamento.sm,
-        paddingBottom: insetsChrome.paddingBottomConteudo + espacamento.lg,
-        paddingHorizontal: espacamento.md,
+        paddingTop: insetsChrome.paddingTopConteudo + tokens.espacamento.sm,
+        paddingBottom: insetsChrome.paddingBottomConteudo + tokens.espacamento.lg,
+        paddingHorizontal: tokens.espacamento.md,
       }}
       keyboardShouldPersistTaps="handled"
     >
       <TextInput style={inputStyle} placeholder="Titulo da missao" placeholderTextColor={paleta.textoSecundario} value={tituloMissao} onChangeText={setTituloMissao} />
-      <TextInput style={styles.input} placeholder="Tema da missao" value={tema} onChangeText={set_tema} />
+      <TextInput
+        style={inputStyle}
+        placeholder="Tema da missao"
+        placeholderTextColor={paleta.textoSecundario}
+        value={tema}
+        onChangeText={set_tema}
+      />
       <TextInput
         style={[inputStyle, styles.inputMultiLinha]}
         placeholder="Descricao"
@@ -76,7 +87,7 @@ export default function TelaCriarMissao({ navigation }) {
         onChangeText={setDescricaoMissao}
         multiline
       />
-      <Text style={[styles.label, { color: paleta.textoSecundario }]}>Dificuldade</Text>
+      <TextoApp style={[styles.label, { color: paleta.textoSecundario }]}>Dificuldade</TextoApp>
       <View style={styles.linhaDificuldade}>
         {["facil", "media", "dificil"].map((opcaoDificuldade) => (
           <BotaoPrimario

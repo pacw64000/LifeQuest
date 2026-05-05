@@ -1,14 +1,17 @@
 import React, { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, StyleSheet, TextInput, View } from "react-native";
 import BotaoPrimario from "../../components/BotaoPrimario";
 import FundoGradienteDecorativo from "../../components/FundoGradienteDecorativo";
+import TextoApp from "../../components/TextoApp";
 import { useAuth } from "../../context/AuthContext";
 import { useTemaVisual } from "../../context/TemaVisualContext";
 import rotas from "../../constants/rotas";
+import { fonteEscalada } from "../../theme";
 
 function TelaLogin({ navigation }) {
   const { loginComEmailSenha, loginComGoogle, loginComoConvidado } = useAuth();
-  const { paleta } = useTemaVisual();
+  const { paleta, tokens } = useTemaVisual();
+  const fontCampo = tokens.fontFamilyTexto ? { fontFamily: tokens.fontFamilyTexto } : null;
   const [emailUsuario, setEmailUsuario] = useState("");
   const [senhaUsuario, setSenhaUsuario] = useState("");
 
@@ -49,14 +52,16 @@ function TelaLogin({ navigation }) {
       borderColor: paleta.bordaSuave,
       backgroundColor: paleta.fundoCartao,
       color: paleta.textoPrincipal,
+      fontSize: fonteEscalada(16, tokens.escalaFonte),
     },
+    fontCampo,
   ];
 
   return (
     <FundoGradienteDecorativo style={styles.container}>
-      <Text style={[styles.marca, { color: paleta.destaqueSecundario }]}>LifeQuest</Text>
-      <Text style={[styles.tagline, { color: paleta.textoPrincipal }]}>Sua jornada comeca aqui</Text>
-      <Text style={[styles.subtitulo, { color: paleta.textoSecundario }]}>Transforme tarefas em aventuras</Text>
+      <TextoApp style={[styles.marca, { color: paleta.destaqueSecundario }]}>LifeQuest</TextoApp>
+      <TextoApp style={[styles.tagline, { color: paleta.textoPrincipal }]}>Sua jornada comeca aqui</TextoApp>
+      <TextoApp style={[styles.subtitulo, { color: paleta.textoSecundario }]}>Transforme tarefas em aventuras</TextoApp>
 
       <TextInput
         placeholder="Email"

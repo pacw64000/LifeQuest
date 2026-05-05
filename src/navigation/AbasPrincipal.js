@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import FaixasDeCores from "../components/FaixasDeCores";
 import TelaDashboard from "../screens/TelaDashboard";
 import TelaMissoes from "../screens/TelaMissoes";
 import TelaCriarMissao from "../screens/TelaCriarMissao";
@@ -46,16 +47,29 @@ function PilhaMiniGames() {
 }
 
 export default function AbasPrincipal() {
-  const { paleta, insetsChrome } = useTemaVisual();
+  const { paleta, insetsChrome, tokens } = useTemaVisual();
+  const tabFs = Math.max(
+    10,
+    Math.round(tokens.tipografia.tabBarLabel * tokens.escalaFonte)
+  );
+  const labelFont = tokens.fontFamilyTexto
+    ? { fontFamily: tokens.fontFamilyTexto, fontSize: tabFs }
+    : { fontSize: tabFs };
 
   return (
     <View style={[styles.raiz, { backgroundColor: paleta.fundoPrimario }]}>
-      <LinearGradient
-        colors={paleta.headerGradient}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.faixaHeader, { height: insetsChrome.alturaHeaderTotal }]}
-      />
+      {tokens.usarFaixasEmVezDeGradiente ? (
+        <View style={[styles.faixaHeader, { height: insetsChrome.alturaHeaderTotal }]}>
+          <FaixasDeCores cores={paleta.headerGradient} style={StyleSheet.absoluteFillObject} />
+        </View>
+      ) : (
+        <LinearGradient
+          colors={paleta.headerGradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.faixaHeader, { height: insetsChrome.alturaHeaderTotal }]}
+        />
+      )}
       <Tabs.Navigator
         tabBar={(props) => <TabBarComCapa {...props} />}
         screenOptions={({ route }) => ({
@@ -64,6 +78,7 @@ export default function AbasPrincipal() {
           tabBarActiveTintColor: paleta.tabBarActiveTint,
           tabBarInactiveTintColor: paleta.tabBarInactiveTint,
           tabBarShowLabel: true,
+          tabBarLabelStyle: labelFont,
           tabBarIcon: ({ color, size }) => {
             const mapaIcones = {
               Dashboard: "speedometer",
