@@ -1,8 +1,8 @@
 import React from "react";
-import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
 import rotas from "../constants/rotas";
 import { useTemaVisual } from "../context/TemaVisualContext";
-import TextoApp from "../components/TextoApp";
+import { espacamento } from "../constants/layout";
 
 const listaMiniGames = [
   { idGame: rotas.jogoMemoria,   tituloGame: "Jogo da Memória",    descricao: "Encontre todos os pares" },
@@ -16,20 +16,20 @@ const listaMiniGames = [
 ];
 
 export default function TelaMiniGames({ navigation }) {
-  const { paleta, insetsChrome, tokens } = useTemaVisual();
+  const { paleta, insetsChrome } = useTemaVisual();
 
   return (
     <ScrollView
       style={[styles.scroll, { backgroundColor: paleta.fundoPrimario }]}
       contentContainerStyle={{
-        paddingTop: insetsChrome.paddingTopConteudo + tokens.espacamento.sm,
-        paddingBottom: insetsChrome.paddingBottomConteudo + tokens.espacamento.lg,
-        paddingHorizontal: tokens.espacamento.md,
+        paddingTop: insetsChrome.paddingTopConteudo + espacamento.sm,
+        paddingBottom: insetsChrome.paddingBottomConteudo + espacamento.lg,
+        paddingHorizontal: espacamento.md,
       }}
     >
-      <TextoApp style={[styles.descricao, { color: paleta.textoSecundario }]}>
+      <Text style={[styles.descricao, { color: paleta.textoSecundario }]}>
         Ganhe XP bonus completando mini games. Limite diário aplicado.
-      </TextoApp>
+      </Text>
       {listaMiniGames.map((gameAtual) => (
         <TouchableOpacity
           key={gameAtual.idGame}
@@ -37,7 +37,7 @@ export default function TelaMiniGames({ navigation }) {
           onPress={() => navigation.navigate(gameAtual.idGame)}
           activeOpacity={0.75}
         >
-          <TextoApp style={[styles.tituloGame, { color: paleta.textoPrincipal }]}>{gameAtual.tituloGame}</TextoApp>
+          <Text style={[styles.tituloGame, { color: paleta.textoPrincipal }]}>{gameAtual.tituloGame}</Text>
           <Text style={[styles.descricaoGame, { color: paleta.textoSecundario }]}>{gameAtual.descricao}</Text>
         </TouchableOpacity>
       ))}

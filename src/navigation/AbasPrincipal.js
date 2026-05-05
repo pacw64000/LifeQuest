@@ -16,6 +16,9 @@ import TelaJogoSnake from "../screens/games/TelaJogoSnake";
 import TelaJogoQuiz from "../screens/games/TelaJogoQuiz";
 import TelaJogoTap from "../screens/games/TelaJogoTap";
 import TelaJogoNonogram from "../screens/games/TelaJogoNonogram";
+import TelaJogoDigitacao from "../screens/games/TelaJogoDigitacao";
+import TelaJogoTermo from "../screens/games/TelaJogoTermo";
+import TelaJogoSequencia from "../screens/games/TelaJogoSequencia";
 import rotas from "../constants/rotas";
 import { useTemaVisual } from "../context/TemaVisualContext";
 import TabBarComCapa from "./TabBarComCapa";
@@ -36,12 +39,15 @@ function PilhaMissoes() {
 function PilhaMiniGames() {
   return (
     <StackMiniGames.Navigator screenOptions={{ contentStyle: { backgroundColor: "transparent" } }}>
-      <StackMiniGames.Screen name={rotas.miniGames} component={TelaMiniGames} options={{ title: "Mini Games" }} />
-      <StackMiniGames.Screen name={rotas.jogoMemoria} component={TelaJogoMemoria} options={{ title: "Jogo da Memoria" }} />
-      <StackMiniGames.Screen name={rotas.jogoSnake} component={TelaJogoSnake} options={{ title: "Snake" }} />
-      <StackMiniGames.Screen name={rotas.jogoQuiz} component={TelaJogoQuiz} options={{ title: "Quiz Rapido" }} />
-      <StackMiniGames.Screen name={rotas.jogoTap} component={TelaJogoTap} options={{ title: "Tap Challenge" }} />
-      <StackMiniGames.Screen name={rotas.jogoNonogram} component={TelaJogoNonogram} options={{ title: "Nonogram" }} />
+      <StackMiniGames.Screen name={rotas.miniGames}    component={TelaMiniGames}      options={{ title: "Mini Games" }} />
+      <StackMiniGames.Screen name={rotas.jogoMemoria}  component={TelaJogoMemoria}    options={{ title: "Jogo da Memória" }} />
+      <StackMiniGames.Screen name={rotas.jogoSnake}    component={TelaJogoSnake}      options={{ title: "Snake" }} />
+      <StackMiniGames.Screen name={rotas.jogoQuiz}     component={TelaJogoQuiz}       options={{ title: "Quiz Rápido" }} />
+      <StackMiniGames.Screen name={rotas.jogoTap}      component={TelaJogoTap}        options={{ title: "Tap Challenge" }} />
+      <StackMiniGames.Screen name={rotas.jogoNonogram} component={TelaJogoNonogram}   options={{ title: "Nonogram" }} />
+      <StackMiniGames.Screen name={rotas.jogoDigitacao} component={TelaJogoDigitacao} options={{ title: "Digitação Rápida" }} />
+      <StackMiniGames.Screen name={rotas.jogoTermo}    component={TelaJogoTermo}      options={{ title: "Termo" }} />
+      <StackMiniGames.Screen name={rotas.jogoSequencia} component={TelaJogoSequencia} options={{ title: "Sequência de Cores" }} />
     </StackMiniGames.Navigator>
   );
 }
@@ -93,19 +99,17 @@ export default function AbasPrincipal() {
         })}
       >
         <Tabs.Screen name={rotas.dashboard} component={TelaDashboard} options={{ title: "Inicio" }} />
-        <Tabs.Screen name="MissoesStack" component={PilhaMissoes} options={{ title: "Missoes" }} />
+        <Tabs.Screen name="MissoesStack"   component={PilhaMissoes}   options={{ title: "Missoes" }} />
         <Tabs.Screen name="MiniGamesStack" component={PilhaMiniGames} options={{ title: "Games" }} />
         <Tabs.Screen name={rotas.conquistas} component={TelaConquistas} />
-        <Tabs.Screen name="PerfilStack" component={PilhaPerfil} options={{ title: "Perfil" }} />
+        <Tabs.Screen name="PerfilStack"    component={PilhaPerfil}    options={{ title: "Perfil" }} />
       </Tabs.Navigator>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  raiz: {
-    flex: 1,
-  },
+  raiz: { flex: 1 },
   faixaHeader: {
     position: "absolute",
     top: 0,

@@ -14,6 +14,9 @@ const rotas = {
   jogoQuiz: "JogoQuiz",
   jogoTap: "JogoTap",
   jogoNonogram: "JogoNonogram",
+  jogoDigitacao: "JogoDigitacao",
+  jogoTermo: "JogoTermo",
+  jogoSequencia: "JogoSequencia",
 };
 
 export default rotas;
