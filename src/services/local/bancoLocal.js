@@ -1,6 +1,6 @@
 import * as SQLite from "expo-sqlite";
 
-const bancoPromise = SQLite.openDatabaseAsync("lifequest.db");
+export const bancoPromise = SQLite.openDatabaseAsync("lifequest.db");
 let inicializado = false;
 
 function serializar(valor) {
@@ -41,8 +41,80 @@ export async function inicializarBancoLocal() {
       payload_json TEXT,
       criado_em TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS quiz_meta (
+      chave TEXT PRIMARY KEY NOT NULL,
+      valor_integer INTEGER
+    );
+    CREATE TABLE IF NOT EXISTS quiz_fonte (
+      id TEXT PRIMARY KEY NOT NULL,
+      rotulo TEXT NOT NULL,
+      versao_seed INTEGER NOT NULL DEFAULT 0
+    );
+    CREATE TABLE IF NOT EXISTS quiz_categoria (
+      id TEXT PRIMARY KEY NOT NULL,
+      id_fonte TEXT NOT NULL,
+      nome_exibicao TEXT NOT NULL,
+      contagem INTEGER NOT NULL DEFAULT 0
+    );
+    CREATE TABLE IF NOT EXISTS quiz_pergunta (
+      id TEXT PRIMARY KEY NOT NULL,
+      id_categoria TEXT NOT NULL,
+      texto_pergunta TEXT NOT NULL,
+      opcoes_json TEXT NOT NULL,
+      indice_correto INTEGER NOT NULL,
+      dificuldade TEXT,
+      ordem_arquivo INTEGER
+    );
+    CREATE TABLE IF NOT EXISTS quiz_resultado (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id_usuario TEXT NOT NULL,
+      nome_exibicao TEXT NOT NULL,
+      id_categoria TEXT NOT NULL,
+      acertos INTEGER NOT NULL,
+      total_perguntas INTEGER NOT NULL,
+      tempo_total_ms INTEGER NOT NULL,
+      pontuacao INTEGER NOT NULL,
+      criado_em TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_quiz_resultado_rank
+      ON quiz_resultado(id_categoria, pontuacao DESC, tempo_total_ms ASC, criado_em DESC);
+    CREATE TABLE IF NOT EXISTS nonogram_puzzles (
+      id TEXT PRIMARY KEY NOT NULL,
+      id_usuario TEXT,
+      titulo TEXT NOT NULL,
+      categoria TEXT NOT NULL DEFAULT 'Outros',
+      visibilidade TEXT NOT NULL,
+      codigo_compartilhamento TEXT,
+      grade_json TEXT NOT NULL,
+      largura INTEGER NOT NULL,
+      altura INTEGER NOT NULL,
+      pontuacao_base REAL NOT NULL,
+      criado_em TEXT NOT NULL,
+      id_firestore TEXT,
+      uri_origem_local TEXT,
+      meta_json TEXT NOT NULL DEFAULT '{}'
+    );
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_nonogram_codigo ON nonogram_puzzles(codigo_compartilhamento)
+      WHERE codigo_compartilhamento IS NOT NULL AND length(codigo_compartilhamento) > 0;
+    CREATE TABLE IF NOT EXISTS nonogram_leaderboard (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id_puzzle TEXT NOT NULL,
+      id_usuario TEXT NOT NULL,
+      tempo_ms INTEGER NOT NULL,
+      erros INTEGER NOT NULL,
+      pontuacao_final REAL NOT NULL,
+      finalizado_em TEXT NOT NULL,
+      nome_exibicao TEXT,
+      UNIQUE(id_puzzle, id_usuario)
+    );
+    CREATE INDEX IF NOT EXISTS idx_nonogram_lb_puzzle ON nonogram_leaderboard(id_puzzle);
   `);
   inicializado = true;
+}
+
+export async function obterBancoSqlite() {
+  await inicializarBancoLocal();
+  return await bancoPromise;
 }
 
 export async function obterPerfilLocal(idUsuario) {

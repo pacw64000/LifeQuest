@@ -7,9 +7,9 @@ import TextoApp from "../components/TextoApp";
 const listaMiniGames = [
   { idGame: rotas.jogoMemoria,   tituloGame: "Jogo da Memória",    descricao: "Encontre todos os pares" },
   { idGame: rotas.jogoSnake,     tituloGame: "Snake",              descricao: "Coma a comida sem bater" },
-  { idGame: rotas.jogoQuiz,      tituloGame: "Quiz Rápido",        descricao: "Responda perguntas de produtividade" },
+  { idGame: rotas.jogoQuiz,      tituloGame: "Quiz Rápido",        descricao: "Escolha a categoria, responda contra o tempo e veja o ranking" },
   { idGame: rotas.jogoTap,       tituloGame: "Tap Challenge",      descricao: "Toque o máximo em 10 segundos" },
-  { idGame: rotas.jogoNonogram,  tituloGame: "Nonogram",           descricao: "Resolva o puzzle de lógica" },
+  { idGame: rotas.nonogramHub,   tituloGame: "Nonogram",           descricao: "Crie puzzles a partir de fotos e jogue online" },
   { idGame: rotas.jogoDigitacao, tituloGame: "Digitação Rápida",   descricao: "Digite a palavra antes do tempo" },
   { idGame: rotas.jogoTermo,     tituloGame: "Termo",              descricao: "Adivinhe a palavra em 6 tentativas" },
   { idGame: rotas.jogoSequencia, tituloGame: "Sequência de Cores", descricao: "Repita a sequência que pisca" },
@@ -38,7 +38,7 @@ export default function TelaMiniGames({ navigation }) {
           activeOpacity={0.75}
         >
           <TextoApp style={[styles.tituloGame, { color: paleta.textoPrincipal }]}>{gameAtual.tituloGame}</TextoApp>
-          <Text style={[styles.descricaoGame, { color: paleta.textoSecundario }]}>{gameAtual.descricao}</Text>
+          <TextoApp style={[styles.descricaoGame, { color: paleta.textoSecundario }]}>{gameAtual.descricao}</TextoApp>
         </TouchableOpacity>
       ))}
     </ScrollView>

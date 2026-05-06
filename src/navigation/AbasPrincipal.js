@@ -16,6 +16,12 @@ import TelaJogoSnake from "../screens/games/TelaJogoSnake";
 import TelaJogoQuiz from "../screens/games/TelaJogoQuiz";
 import TelaJogoTap from "../screens/games/TelaJogoTap";
 import TelaJogoNonogram from "../screens/games/TelaJogoNonogram";
+import TelaNonogramHub from "../screens/games/TelaNonogramHub";
+import TelaNonogramCriar from "../screens/games/TelaNonogramCriar";
+import TelaNonogramComunidade from "../screens/games/TelaNonogramComunidade";
+import TelaNonogramEntrarCodigo from "../screens/games/TelaNonogramEntrarCodigo";
+import TelaNonogramMeus from "../screens/games/TelaNonogramMeus";
+import TelaNonogramLeaderboard from "../screens/games/TelaNonogramLeaderboard";
 import TelaJogoDigitacao from "../screens/games/TelaJogoDigitacao";
 import TelaJogoTermo from "../screens/games/TelaJogoTermo";
 import TelaJogoSequencia from "../screens/games/TelaJogoSequencia";
@@ -45,7 +51,13 @@ function PilhaMiniGames() {
       <StackMiniGames.Screen name={rotas.jogoSnake}    component={TelaJogoSnake}      options={{ title: "Snake" }} />
       <StackMiniGames.Screen name={rotas.jogoQuiz}     component={TelaJogoQuiz}       options={{ title: "Quiz Rápido" }} />
       <StackMiniGames.Screen name={rotas.jogoTap}      component={TelaJogoTap}        options={{ title: "Tap Challenge" }} />
-      <StackMiniGames.Screen name={rotas.jogoNonogram} component={TelaJogoNonogram}   options={{ title: "Nonogram" }} />
+      <StackMiniGames.Screen name={rotas.nonogramHub} component={TelaNonogramHub} options={{ title: "Nonogram" }} />
+      <StackMiniGames.Screen name={rotas.nonogramCriar} component={TelaNonogramCriar} options={{ title: "Criar Nonogram" }} />
+      <StackMiniGames.Screen name={rotas.nonogramComunidade} component={TelaNonogramComunidade} options={{ title: "Comunidade" }} />
+      <StackMiniGames.Screen name={rotas.nonogramEntrarCodigo} component={TelaNonogramEntrarCodigo} options={{ title: "Codigo" }} />
+      <StackMiniGames.Screen name={rotas.nonogramMeus} component={TelaNonogramMeus} options={{ title: "Meus puzzles" }} />
+      <StackMiniGames.Screen name={rotas.jogoNonogram} component={TelaJogoNonogram} options={{ title: "Nonogram" }} />
+      <StackMiniGames.Screen name={rotas.nonogramLeaderboard} component={TelaNonogramLeaderboard} options={{ title: "Placar" }} />
       <StackMiniGames.Screen name={rotas.jogoDigitacao} component={TelaJogoDigitacao} options={{ title: "Digitação Rápida" }} />
       <StackMiniGames.Screen name={rotas.jogoTermo}    component={TelaJogoTermo}      options={{ title: "Termo" }} />
       <StackMiniGames.Screen name={rotas.jogoSequencia} component={TelaJogoSequencia} options={{ title: "Sequência de Cores" }} />

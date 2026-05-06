@@ -9,7 +9,7 @@ const listaMiniGames = [
   { idGame: rotas.jogoSnake,     tituloGame: "Snake",              descricao: "Coma a comida sem bater" },
   { idGame: rotas.jogoQuiz,      tituloGame: "Quiz Rápido",        descricao: "Responda perguntas de produtividade" },
   { idGame: rotas.jogoTap,       tituloGame: "Tap Challenge",      descricao: "Toque o máximo em 10 segundos" },
-  { idGame: rotas.jogoNonogram,  tituloGame: "Nonogram",           descricao: "Resolva o puzzle de lógica" },
+  { idGame: rotas.nonogramHub,   tituloGame: "Nonogram",           descricao: "Crie puzzles a partir de fotos e jogue online" },
   { idGame: rotas.jogoDigitacao, tituloGame: "Digitação Rápida",   descricao: "Digite a palavra antes do tempo" },
   { idGame: rotas.jogoTermo,     tituloGame: "Termo",              descricao: "Adivinhe a palavra em 6 tentativas" },
   { idGame: rotas.jogoSequencia, tituloGame: "Sequência de Cores", descricao: "Repita a sequência que pisca" },
